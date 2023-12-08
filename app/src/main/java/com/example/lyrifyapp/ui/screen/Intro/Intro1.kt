@@ -32,7 +32,7 @@ import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.montserrat
 
 @Composable
-private fun loadingview(){
+public fun loadingview(){
 
 
     Column(

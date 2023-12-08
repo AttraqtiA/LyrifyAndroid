@@ -38,7 +38,7 @@ import com.example.lyrifyapp.ui.theme.Purple2
 import com.example.lyrifyapp.ui.theme.montserrat
 
 @Composable
-private fun loading1view(){
+public fun loading1view(){
     Column(
         modifier = Modifier
             .fillMaxSize()
