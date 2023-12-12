@@ -1,8 +1,10 @@
 package com.example.lyrifyapp.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -30,7 +32,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.screen.Intro.loading1view
+import com.example.lyrifyapp.ui.screen.Intro.loading2view
+import com.example.lyrifyapp.ui.screen.Intro.loading3view
 import com.example.lyrifyapp.ui.screen.Intro.loadingview
+import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
 import com.example.lyrifyapp.ui.theme.Purple2
 
 enum class Lyrify_Screen() {
@@ -70,7 +76,8 @@ fun BottomNavBarLyrify(navController: NavController) {
 
     NavigationBar(
         // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme YAOLO KETEMU
-        containerColor = Purple2
+        containerColor = Purple2,
+        modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(24.dp))
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -132,13 +139,32 @@ fun LyrifyRoute() {
         ) {
 
             composable(
-                Lyrify_Screen.Intro1.name,
+                Lyrify_Screen.Intro1.name
             ) {
-
                 canNavigateBack = false
                 loadingview()
             }
 
+            composable(Lyrify_Screen.Intro2.name) {
+                canNavigateBack = false
+                loading1view()
+            }
+
+            composable(Lyrify_Screen.Intro3.name) {
+                canNavigateBack = false
+                loading2view()
+            }
+
+            composable(Lyrify_Screen.Intro4.name) {
+                canNavigateBack = false
+                loading3view()
+            }
+
+
+            composable(Lyrify_Screen.Leaderboard.name) {
+                canNavigateBack = true
+                LeaderboardView()
+            }
 
         }
     }
