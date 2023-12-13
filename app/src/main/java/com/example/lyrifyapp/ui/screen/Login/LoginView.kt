@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +35,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +57,7 @@ import com.example.lyrifyapp.ui.theme.montserrat
 private fun loginview(){
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
+    var passwordVisibility by remember { mutableStateOf(false)}
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +101,12 @@ private fun loginview(){
             onValueChange = {
             email = it
             },
-            modifier = Modifier.padding(top = 16.dp)
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier
+                .padding(top = 16.dp)
                 .width(320.dp)
                 .height(64.dp),
                 shape = RoundedCornerShape(8.dp),
@@ -124,11 +136,15 @@ private fun loginview(){
             onValueChange = {
                 pass = it
             },
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier
+                .padding(vertical = 16.dp)
                 .width(320.dp)
                 .height(64.dp),
             shape = RoundedCornerShape(8.dp),
-
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
             label = {
                 Text(
                     text = "Password",
@@ -149,16 +165,15 @@ private fun loginview(){
                 unfocusedBorderColor = Orange
             ),
             trailingIcon = {
-                IconButton(
-                    onClick = { /**/ }
-                ) {
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Icon(
-                          imageVector = Icons.Default.Place,
-                            contentDescription = "Visible"
+                        imageVector = if (passwordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = "Toggle password visibility"
                     )
-
                 }
             },
+            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+
         )
 
         Button(onClick = {/**/},

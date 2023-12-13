@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -201,7 +202,7 @@ private fun registerview(){
                     onClick = { /**/ }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Place,
+                        imageVector = Icons.Filled.DateRange,
                         contentDescription = "Visible"
                     )
 
@@ -222,7 +223,7 @@ private fun registerview(){
 
             label = {
                 Text(
-                    text = "Birthdate",
+                    text = "Gender",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = montserrat,
@@ -244,7 +245,7 @@ private fun registerview(){
                     onClick = { /**/ }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Place,
+                        imageVector = Icons.Filled.KeyboardArrowDown,
                         contentDescription = "Visible"
                     )
 

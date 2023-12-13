@@ -1,4 +1,10 @@
 package com.example.lyrifyapp.ui.screen.Login
 
-class LoginViewModel {
+import androidx.lifecycle.ViewModel
+
+class LoginViewModel: ViewModel() {
+    fun loginbutton(email: String, password: String){
+
+    }
+
 }
