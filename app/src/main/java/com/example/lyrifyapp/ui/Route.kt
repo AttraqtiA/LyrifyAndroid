@@ -2,6 +2,7 @@ package com.example.lyrifyapp.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +34,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.screen.Gameplay.GameplayView
+import com.example.lyrifyapp.ui.screen.Gameplay.ResultView
 import com.example.lyrifyapp.ui.screen.Intro.loading1view
 import com.example.lyrifyapp.ui.screen.Intro.loading2view
 import com.example.lyrifyapp.ui.screen.Intro.loading3view
@@ -50,8 +54,8 @@ enum class Lyrify_Screen() {
     ChapterList,
     ChapterDetail,
     Leaderboard,
-    Music,
-    ChapterComplete,
+    Gameplay,
+    Result,
     Profile
 }
 
@@ -77,7 +81,10 @@ fun BottomNavBarLyrify(navController: NavController) {
     NavigationBar(
         // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme YAOLO KETEMU
         containerColor = Purple2,
-        modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(24.dp))
+        modifier = Modifier
+            .background(color = Color.Transparent)
+            .height(64.dp)
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -85,6 +92,7 @@ fun BottomNavBarLyrify(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.title,
+                        modifier = if(item == BottomNavItem.Leaderboard) { Modifier.size(40.dp) } else { Modifier.size(32.dp) }
                     )
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
@@ -134,7 +142,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.Intro1.name,
+            startDestination = Lyrify_Screen.Result.name,
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -166,6 +174,15 @@ fun LyrifyRoute() {
                 LeaderboardView()
             }
 
+            composable(Lyrify_Screen.Gameplay.name) {
+                canNavigateBack = false
+                GameplayView()
+            }
+
+            composable(Lyrify_Screen.Result.name) {
+                canNavigateBack = false
+                ResultView()
+            }
         }
     }
 }
