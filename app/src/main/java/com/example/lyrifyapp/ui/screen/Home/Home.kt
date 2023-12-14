@@ -204,7 +204,7 @@ fun SongCard(
 
 ) {
     Card(
-        shape = RoundedCornerShape(7.dp),
+        shape = RoundedCornerShape(10.dp),
         border = BorderStroke(0.5.dp, Orange),
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -223,12 +223,12 @@ fun SongCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.artistpicture),
+                    painter = painterResource(id = R.drawable.artist_picture),
                     contentDescription = "artist_picture_1",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
-                        .clip(RoundedCornerShape(7.dp))
+                        .clip(RoundedCornerShape(10.dp))
                 )
                 Spacer(Modifier.height(5.dp))
                 Row(
@@ -307,7 +307,7 @@ fun ChapterCard(
 
 ) {
     Card(
-        shape = RoundedCornerShape(7.dp),
+        shape = RoundedCornerShape(10.dp),
         border = BorderStroke(0.5.dp, Orange),
         modifier = Modifier
             .fillMaxWidth()

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -71,7 +72,11 @@ fun ChapterListView(chapterlistViewModel: ChapterListViewModel = viewModel()) {
                     Image(
                         painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                         contentDescription = "Back",
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clickable {
+                                //
+                            },
                         contentScale = ContentScale.Crop,
                     )
                     Text(
@@ -155,7 +160,11 @@ fun ChapterListCard(
     Card(
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(0.5.dp, Orange),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                //
+            },
         colors = CardDefaults.cardColors(
             containerColor = DarkPurple,
         ),
