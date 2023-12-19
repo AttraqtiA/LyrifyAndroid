@@ -30,11 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -44,10 +46,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple80
@@ -56,16 +59,22 @@ import com.example.lyrifyapp.ui.theme.montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun registerview(){
+private fun registerview(
+    rvm: RegisterViewModel,
+    navController: NavController,
+
+    ){
 
     var isExpanded by remember{ mutableStateOf(false)}
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var pass by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
-    var birthdate by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var pass by rememberSaveable { mutableStateOf("") }
+    var bio by rememberSaveable { mutableStateOf("") }
+    var birthdate by rememberSaveable { mutableStateOf("") }
+    var gender by rememberSaveable { mutableStateOf("") }
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -419,7 +428,15 @@ private fun registerview(){
             }
         }
 
-        Button(onClick = {/**/},
+        Button(onClick = {
+            rvm.registerbutton(
+                name=name,
+                email=email,
+                pass=pass,
+                birthdate=birthdate,
+                gender=gender,
+            )
+                         },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),
             shape = RoundedCornerShape(7.dp),
             modifier = Modifier
@@ -515,8 +532,8 @@ private fun CustomTextField(
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun registerpreview(){
-    registerview()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun registerpreview(){
+//    registerview()
+//}

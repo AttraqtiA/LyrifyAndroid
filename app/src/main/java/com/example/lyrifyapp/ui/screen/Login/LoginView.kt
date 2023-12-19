@@ -41,10 +41,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple80
@@ -54,7 +55,11 @@ import com.example.lyrifyapp.ui.theme.montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun loginview(){
+private fun loginview(
+lvm:LoginViewModel,
+navController: NavController,
+
+){
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false)}
@@ -177,12 +182,18 @@ private fun loginview(){
 
         )
 
-        Button(onClick = {/**/},
+        Button(onClick = {
+            lvm.loginbutton(
+            email = email,
+            password = pass,
+            )
+                         },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),
             shape = RoundedCornerShape(7.dp),
             modifier = Modifier
                 .width(320.dp)
-                .height(50.dp)
+                .height(50.dp),
+            enabled = email.isNotBlank() && pass.isNotBlank()
 
         ) {
             Text(
@@ -228,8 +239,8 @@ private fun loginview(){
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun loginpreview(){
-    loginview()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun loginpreview(){
+//    loginview()
+//}
