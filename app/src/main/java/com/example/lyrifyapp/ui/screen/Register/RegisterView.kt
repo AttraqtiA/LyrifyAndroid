@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
@@ -62,7 +63,7 @@ import com.example.lyrifyapp.ui.theme.montserrat
 private fun registerview(
     rvm: RegisterViewModel,
     navController: NavController,
-
+    dataStore: DataStoreManager
     ){
 
     var isExpanded by remember{ mutableStateOf(false)}
@@ -435,6 +436,8 @@ private fun registerview(
                 pass=pass,
                 birthdate=birthdate,
                 gender=gender,
+                context = context,
+                dataStore = dataStore
             )
                          },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),

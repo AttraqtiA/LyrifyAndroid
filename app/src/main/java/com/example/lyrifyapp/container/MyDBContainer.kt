@@ -1,10 +1,21 @@
 package com.example.lyrifyapp.container
 
 import com.example.lyrifyapp.Service.MyDBService
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+class AuthInterceptor(private val bearerToken: String) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        val originalRequest = chain.request()
+        val request = originalRequest.newBuilder()
+            .header("Authorization", "Bearer $bearerToken")
+            .build()
+        return chain.proceed(request)
+    }
+}
 class MyDBContainer {
     companion object{
         //bekerja seperti static

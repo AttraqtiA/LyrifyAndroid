@@ -4,8 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.container.MyDBContainer
+import com.example.lyrifyapp.data.DataStoreManager
 import kotlinx.coroutines.launch
 
 
@@ -38,5 +38,3 @@ class LoginViewModel: ViewModel() {
             }
         }
     }
-
-}
