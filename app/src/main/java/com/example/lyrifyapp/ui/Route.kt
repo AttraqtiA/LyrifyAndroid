@@ -41,6 +41,7 @@ import com.example.lyrifyapp.ui.screen.Intro.loading2view
 import com.example.lyrifyapp.ui.screen.Intro.loading3view
 import com.example.lyrifyapp.ui.screen.Intro.loadingview
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
+import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
 
 enum class Lyrify_Screen() {
@@ -107,7 +108,7 @@ fun BottomNavBarLyrify(navController: NavController) {
                 },
                 // Customize the colors
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White,
+                    selectedIconColor = Orange,
                     unselectedIconColor = Color.White,
                     selectedTextColor = Color.Transparent,
                     indicatorColor = Purple2 // ini warna efek clickednya!
@@ -167,7 +168,6 @@ fun LyrifyRoute() {
                 canNavigateBack = false
                 loading3view()
             }
-
 
             composable(Lyrify_Screen.Leaderboard.name) {
                 canNavigateBack = true
