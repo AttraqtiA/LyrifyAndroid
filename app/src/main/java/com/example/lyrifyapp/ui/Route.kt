@@ -62,8 +62,12 @@ enum class Lyrify_Screen() {
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
     object Home : BottomNavItem("Home", R.drawable.homepage, Lyrify_Screen.Home.name)
-    object ChapterList : BottomNavItem("ChapterList", R.drawable.musical_notes, Lyrify_Screen.ChapterList.name)
-    object Leaderboard : BottomNavItem("Leaderboard", R.drawable.leaderboard, Lyrify_Screen.Leaderboard.name)
+    object ChapterList :
+        BottomNavItem("ChapterList", R.drawable.musical_notes, Lyrify_Screen.ChapterList.name)
+
+    object Leaderboard :
+        BottomNavItem("Leaderboard", R.drawable.leaderboard, Lyrify_Screen.Leaderboard.name)
+
     object Profile : BottomNavItem("Profile", R.drawable.account, Lyrify_Screen.Profile.name)
 }
 
