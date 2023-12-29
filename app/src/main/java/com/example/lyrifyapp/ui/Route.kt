@@ -34,12 +34,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
+import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailView
+import com.example.lyrifyapp.ui.screen.Gameplay.CountdownView
 import com.example.lyrifyapp.ui.screen.Gameplay.GameplayView
 import com.example.lyrifyapp.ui.screen.Gameplay.ResultView
-import com.example.lyrifyapp.ui.screen.Intro.loading1view
-import com.example.lyrifyapp.ui.screen.Intro.loading2view
-import com.example.lyrifyapp.ui.screen.Intro.loading3view
-import com.example.lyrifyapp.ui.screen.Intro.loadingview
+import com.example.lyrifyapp.ui.screen.Home.HomeView
+import com.example.lyrifyapp.ui.screen.Intro.LoginView
+import com.example.lyrifyapp.ui.screen.Register.RegisterView
+import com.example.lyrifyapp.ui.screen.Intro.Loading1View
+import com.example.lyrifyapp.ui.screen.Intro.Loading2View
+import com.example.lyrifyapp.ui.screen.Intro.Loading3View
+import com.example.lyrifyapp.ui.screen.Intro.LoadingView
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
@@ -50,11 +56,12 @@ enum class Lyrify_Screen() {
     Intro3,
     Intro4,
     Login,
-    SignUp,
+    Register,
     Home,
     ChapterList,
     ChapterDetail,
     Leaderboard,
+    Countdown,
     Gameplay,
     Result,
     Profile
@@ -155,27 +162,62 @@ fun LyrifyRoute() {
                 Lyrify_Screen.Intro1.name
             ) {
                 canNavigateBack = false
-                loadingview()
+                LoadingView()
             }
 
             composable(Lyrify_Screen.Intro2.name) {
                 canNavigateBack = false
-                loading1view()
+                Loading1View()
             }
 
             composable(Lyrify_Screen.Intro3.name) {
                 canNavigateBack = false
-                loading2view()
+                Loading2View()
             }
 
             composable(Lyrify_Screen.Intro4.name) {
                 canNavigateBack = false
-                loading3view()
+                Loading3View()
+            }
+
+//            composable(Lyrify_Screen.Login.name) {
+//                canNavigateBack = true
+//                LoginView()
+//            }
+//
+//            composable(Lyrify_Screen.Register.name) {
+//                canNavigateBack = true
+//                RegisterView()
+//            }
+
+            composable(Lyrify_Screen.Home.name) {
+                canNavigateBack = true
+                HomeView()
+            }
+
+//            composable(Lyrify_Screen.Profile.name) {
+//                canNavigateBack = true
+//                GameplayView()
+//            }
+
+            composable(Lyrify_Screen.ChapterList.name) {
+                canNavigateBack = true
+                ChapterListView()
+            }
+
+            composable(Lyrify_Screen.ChapterDetail.name) {
+                canNavigateBack = true
+                ChapterDetailView()
             }
 
             composable(Lyrify_Screen.Leaderboard.name) {
                 canNavigateBack = true
                 LeaderboardView()
+            }
+
+            composable(Lyrify_Screen.Countdown.name) {
+                canNavigateBack = false
+                CountdownView()
             }
 
             composable(Lyrify_Screen.Gameplay.name) {

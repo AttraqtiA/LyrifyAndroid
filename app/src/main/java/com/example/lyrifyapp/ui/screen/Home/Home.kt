@@ -50,7 +50,7 @@ import com.example.lyrifyapp.R
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.ChapColor
 import com.example.lyrifyapp.ui.theme.ChapDesc
-import com.example.lyrifyapp.ui.theme.Green
+import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.montserrat
@@ -374,7 +374,7 @@ fun ChapterCard(
                             append("Total point: ")
                             withStyle(
                                 style = SpanStyle(
-                                    color = Green
+                                    color = GreenCorrect
                                 )
                             ) {
                                 append("100 points")

@@ -1,4 +1,4 @@
-package com.example.lyrifyapp.ui.screen.Intro
+package com.example.lyrifyapp.ui.screen.Register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -59,13 +60,12 @@ import com.example.lyrifyapp.ui.theme.montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun registerview(
+fun RegisterView(
     rvm: RegisterViewModel,
-    navController: NavController,
+    navController: NavController
+) {
 
-    ){
-
-    var isExpanded by remember{ mutableStateOf(false)}
+    var isExpanded by remember { mutableStateOf(false) }
 
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -90,12 +90,9 @@ private fun registerview(
 //            modifier = Modifier.width(96.dp)
 //        )
 
-        Box(
-            contentAlignment = Alignment.BottomEnd,
-            modifier = Modifier.clickable(
-                onClick = {/**/}
-            )
-        ){
+        Box(contentAlignment = Alignment.BottomEnd,
+            modifier = Modifier.clickable(onClick = {/**/ })
+        ) {
 //            AsyncImage(
 //                model = ImageRequest.Builder(LocalContext.current)
 //                    .data(selectedImage)
@@ -114,7 +111,8 @@ private fun registerview(
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.width(96.dp)
             )
-            Icon(imageVector = Icons.Filled.AddCircle,
+            Icon(
+                imageVector = Icons.Filled.AddCircle,
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .padding(8.dp)
@@ -127,8 +125,7 @@ private fun registerview(
 
 
         Text(
-            text = "Create Your Account",
-            style = TextStyle(
+            text = "Create Your Account", style = TextStyle(
                 fontSize = 24.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight(700),
@@ -182,37 +179,37 @@ private fun registerview(
 //                unfocusedBorderColor = Orange
 //            )
 //        )
-        CustomTextField(value = name,
-            onValueChanged = {name = it},
+        CustomTextField(
+            value = name,
+            onValueChanged = { name = it },
             text = "Name",
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
             ),
         )
 
-        CustomTextField(value = email,
-            onValueChanged = {email = it},
+        CustomTextField(
+            value = email,
+            onValueChanged = { email = it },
             text = "Email Address",
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
             ),
         )
-        CustomTextField(value = pass,
-            onValueChanged = {pass = it},
+        CustomTextField(
+            value = pass,
+            onValueChanged = { pass = it },
             text = "Password",
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
             ),
         )
-        CustomTextField(value = bio,
-            onValueChanged = {bio = it},
+        CustomTextField(
+            value = bio,
+            onValueChanged = { bio = it },
             text = "Bio",
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
             ),
         )
 
@@ -248,8 +245,6 @@ private fun registerview(
 //        )
 
 
-
-
         OutlinedTextField(
             value = birthdate,
             onValueChange = {
@@ -272,19 +267,16 @@ private fun registerview(
 
                         textAlign = TextAlign.Center,
 
-                    ),
-                    modifier = Modifier.padding(top=2.dp),
+                        ),
+                    modifier = Modifier.padding(top = 2.dp),
 
                     )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Orange,
-                unfocusedBorderColor = Orange
+                focusedBorderColor = Orange, unfocusedBorderColor = Orange
             ),
             trailingIcon = {
-                IconButton(
-                    onClick = { /**/ }
-                ) {
+                IconButton(onClick = { /**/ }) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "Visible",
@@ -338,54 +330,49 @@ private fun registerview(
 //            },
 //        )
 
-        ExposedDropdownMenuBox(expanded = isExpanded,
-            onExpandedChange = {isExpanded = it}
-        ) {
+        ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isExpanded = it }) {
 
             OutlinedTextField(
-            value = gender,
-            onValueChange = {
+                value = gender,
+                onValueChange = {
 //                gender = it
-            },
+                },
                 readOnly = true,
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .width(320.dp)
-                .height(64.dp),
-            shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .width(320.dp)
+                    .height(64.dp),
+                shape = RoundedCornerShape(8.dp),
 
-            label = {
-                Text(
-                    text = "Gender",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = montserrat,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFFFFFFFF),
+                label = {
+                    Text(
+                        text = "Gender",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFFFFFFFF),
 
-                        textAlign = TextAlign.Center,
-                    ),
-                    modifier = Modifier.padding(top=2.dp),
+                            textAlign = TextAlign.Center,
+                        ),
+                        modifier = Modifier.padding(top = 2.dp),
 
-                    )
-            },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Orange,
-                unfocusedBorderColor = Orange
-            ),
-            trailingIcon = {
-                IconButton(
-                    onClick = { /**/ }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "Visible",
-                        tint = Color.White
-                    )
+                        )
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Orange, unfocusedBorderColor = Orange
+                ),
+                trailingIcon = {
+                    IconButton(onClick = { /**/ }) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            contentDescription = "Visible",
+                            tint = Color.White
+                        )
 
-                }
-            },
-        )
+                    }
+                },
+            )
 
 //            TextField(
 //                value=gender,
@@ -396,47 +383,47 @@ private fun registerview(
 //                },
 //            )
 
-            ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded=false })
-            {
+            ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
                 DropdownMenuItem(
-                    text={
+                    text = {
                         Text(text = "Male")
-                         },
+                    },
                     onClick = {
                         gender = "Male"
-                        isExpanded=false
+                        isExpanded = false
                     },
                 )
                 DropdownMenuItem(
-                    text={
+                    text = {
                         Text(text = "Female")
                     },
                     onClick = {
                         gender = "Female"
-                        isExpanded=false
+                        isExpanded = false
                     },
                 )
                 DropdownMenuItem(
-                    text={
+                    text = {
                         Text(text = "Other")
                     },
                     onClick = {
                         gender = "Other"
-                        isExpanded=false
+                        isExpanded = false
                     },
                 )
             }
         }
 
-        Button(onClick = {
-            rvm.registerbutton(
-                name=name,
-                email=email,
-                pass=pass,
-                birthdate=birthdate,
-                gender=gender,
-            )
-                         },
+        Button(
+            onClick = {
+                rvm.registerbutton(
+                    name = name,
+                    email = email,
+                    pass = pass,
+                    birthdate = birthdate,
+                    gender = gender,
+                )
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),
             shape = RoundedCornerShape(7.dp),
             modifier = Modifier
@@ -472,16 +459,14 @@ private fun registerview(
         }
 
         Text(
-            text = text,
-            style = TextStyle(
+            text = text, style = TextStyle(
                 fontSize = 12.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight(400),
                 color = Color(0xFFB6B6B6),
 
                 textAlign = TextAlign.Center,
-            ),
-            modifier = Modifier.padding(top = 8.dp)
+            ), modifier = Modifier.padding(top = 8.dp)
         )
 
     }
@@ -490,12 +475,12 @@ private fun registerview(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomTextField(
-    value:String,
+    value: String,
     onValueChanged: (String) -> Unit,
-    text:String,
+    text: String,
     keyboardOptions: KeyboardOptions,
-    modifier:Modifier=Modifier
-){
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChanged,
@@ -516,24 +501,22 @@ private fun CustomTextField(
 
                     textAlign = TextAlign.Center,
                 ),
-                modifier = Modifier.padding(top=2.dp),
+                modifier = Modifier.padding(top = 2.dp),
 
                 )
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Orange,
-            unfocusedBorderColor = Orange
+            focusedBorderColor = Orange, unfocusedBorderColor = Orange
         ),
 
-    )
+        )
 
 
 }
 
 
-
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
 //private fun registerpreview(){
-//    registerview()
+//    RegisterView()
 //}

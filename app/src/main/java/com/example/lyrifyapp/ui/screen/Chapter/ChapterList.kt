@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -44,7 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lyrifyapp.R
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.DarkPurple
-import com.example.lyrifyapp.ui.theme.Green
+import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.montserrat

@@ -52,17 +52,15 @@ import com.example.lyrifyapp.ui.theme.Purple80
 import com.example.lyrifyapp.ui.theme.montserrat
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun loginview(
-lvm:LoginViewModel,
-navController: NavController,
-
-){
+fun LoginView(
+    lvm: LoginViewModel,
+    navController: NavController,
+) {
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false)}
+    var passwordVisibility by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -104,7 +102,7 @@ navController: NavController,
         OutlinedTextField(
             value = email,
             onValueChange = {
-            email = it
+                email = it
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
@@ -114,7 +112,7 @@ navController: NavController,
                 .padding(top = 16.dp)
                 .width(320.dp)
                 .height(64.dp),
-                shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(8.dp),
 
             label = {
                 Text(
@@ -127,9 +125,9 @@ navController: NavController,
 
                         textAlign = TextAlign.Center,
                     ),
-                    modifier = Modifier.padding(top=2.dp),
+                    modifier = Modifier.padding(top = 2.dp),
 
-                )
+                    )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Orange,
@@ -161,7 +159,7 @@ navController: NavController,
 
                         textAlign = TextAlign.Center,
                     ),
-                    modifier = Modifier.padding(top=2.dp),
+                    modifier = Modifier.padding(top = 2.dp),
 
                     )
             },
@@ -180,14 +178,15 @@ navController: NavController,
             },
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
 
-        )
-
-        Button(onClick = {
-            lvm.loginbutton(
-            email = email,
-            password = pass,
             )
-                         },
+
+        Button(
+            onClick = {
+                lvm.loginbutton(
+                    email = email,
+                    password = pass,
+                )
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),
             shape = RoundedCornerShape(7.dp),
             modifier = Modifier

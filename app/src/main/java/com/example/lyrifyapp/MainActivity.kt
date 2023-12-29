@@ -10,9 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailView
-import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
-import com.example.lyrifyapp.ui.screen.Home.HomeView
 import com.example.lyrifyapp.ui.LyrifyRoute
 import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 
