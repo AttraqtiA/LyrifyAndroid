@@ -1,7 +1,7 @@
-package com.example.lyrifyapp.ui.screen.container
+package com.example.lyrifyapp.container
 
 import com.example.lyrifyapp.model.User
-import com.example.lyrifyapp.ui.screen.Service.MyDBService
+import com.example.lyrifyapp.Service.MyDBService
 import java.net.HttpURLConnection
 
 class MyDBRepositories(private val myDBService: MyDBService) {

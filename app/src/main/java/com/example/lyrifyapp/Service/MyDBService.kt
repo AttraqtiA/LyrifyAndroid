@@ -1,4 +1,4 @@
-package com.example.lyrifyapp.ui.screen.Service
+package com.example.lyrifyapp.Service
 
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.User
