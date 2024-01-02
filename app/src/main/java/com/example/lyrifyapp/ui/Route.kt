@@ -34,14 +34,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lyrifyapp.R
-import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
 import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailView
+import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
 import com.example.lyrifyapp.ui.screen.Gameplay.CountdownView
 import com.example.lyrifyapp.ui.screen.Gameplay.GameplayView
 import com.example.lyrifyapp.ui.screen.Gameplay.ResultView
 import com.example.lyrifyapp.ui.screen.Home.HomeView
-import com.example.lyrifyapp.ui.screen.Intro.LoginView
-import com.example.lyrifyapp.ui.screen.Register.RegisterView
 import com.example.lyrifyapp.ui.screen.Intro.Loading1View
 import com.example.lyrifyapp.ui.screen.Intro.Loading2View
 import com.example.lyrifyapp.ui.screen.Intro.Loading3View
@@ -154,7 +152,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.Home.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.Home.name,// GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 

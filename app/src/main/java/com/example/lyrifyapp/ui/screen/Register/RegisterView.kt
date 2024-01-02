@@ -1,5 +1,7 @@
 package com.example.lyrifyapp.ui.screen.Register
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,6 +58,7 @@ import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple80
 import com.example.lyrifyapp.ui.theme.montserrat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 
@@ -247,6 +250,40 @@ fun RegisterView(
 //        )
 
 
+        // Fetching the Local Context
+        val mContext = LocalContext.current
+
+        // Declaring integer values
+        // for year, month and day
+        val mYear: Int
+        val mMonth: Int
+        val mDay: Int
+
+        // Initializing a Calendar
+        val mCalendar = Calendar.getInstance()
+
+        // Fetching current year, month and day
+        mYear = mCalendar.get(Calendar.YEAR)
+        mMonth = mCalendar.get(Calendar.MONTH)
+        mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+        mCalendar.time = Date()
+
+        // Declaring a string value to
+        // store date in string format
+//        val mDate = remember { mutableStateOf("") }
+
+        // Declaring DatePickerDialog and setting
+        // initial values as current values (present year, month and day)
+        val mDatePickerDialog = DatePickerDialog(
+            mContext,
+            { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+                birthdate = "$mDayOfMonth/${mMonth+1}/$mYear"
+            }, mYear, mMonth, mDay
+        )
+
+
+
         OutlinedTextField(
             value = birthdate,
             onValueChange = {
@@ -278,7 +315,7 @@ fun RegisterView(
                 focusedBorderColor = Orange, unfocusedBorderColor = Orange
             ),
             trailingIcon = {
-                IconButton(onClick = { /**/ }) {
+                IconButton(onClick = { mDatePickerDialog.show() }) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "Visible",

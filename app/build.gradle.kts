@@ -78,7 +78,16 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0") // library compose yg menggunakan asyncronus
 
     //datePicker
-    implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
+    //implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
+
+    //Material 3 core
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
+
+    //calendar
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
+
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2")
+
 
 
     // datastore

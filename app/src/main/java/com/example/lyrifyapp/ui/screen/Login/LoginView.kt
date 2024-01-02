@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,8 +62,8 @@ fun LoginView(
     navController: NavController,
     dataStore:DataStoreManager
 ) {
-    var email by remember { mutableStateOf("") }
-    var pass by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var pass by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -192,7 +193,8 @@ fun LoginView(
                     email = email,
                     password = pass,
                     context=context,
-                    dataStore=dataStore
+                    dataStore=dataStore,
+                    navController=navController
                 )
             },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),
@@ -217,6 +219,7 @@ fun LoginView(
 
 
         }
+
         val text = buildAnnotatedString {
             append("Didn't have an account? ")
             withStyle(
