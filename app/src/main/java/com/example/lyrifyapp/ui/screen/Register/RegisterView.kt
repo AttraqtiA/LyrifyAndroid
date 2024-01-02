@@ -46,23 +46,25 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lyrifyapp.R
-import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
+import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple80
 import com.example.lyrifyapp.ui.theme.montserrat
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
     rvm: RegisterViewModel,
-    navController: NavController
+    navController: NavController,
+    datastore:DataStoreManager
 ) {
 
     var isExpanded by remember { mutableStateOf(false) }
@@ -421,6 +423,8 @@ fun RegisterView(
                     email = email,
                     pass = pass,
                     birthdate = birthdate,
+                    context= context,
+                    dataStore= datastore,
                     gender = gender,
                 )
             },
@@ -514,6 +518,11 @@ private fun CustomTextField(
 
 }
 
+
+private fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("dd/MM/yyyy")
+    return formatter.format(Date(millis))
+}
 
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable

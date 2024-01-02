@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
@@ -57,9 +59,13 @@ import com.example.lyrifyapp.ui.theme.montserrat
 fun LoginView(
     lvm: LoginViewModel,
     navController: NavController,
+    dataStore:DataStoreManager
 ) {
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+
     var passwordVisibility by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -185,6 +191,8 @@ fun LoginView(
                 lvm.loginbutton(
                     email = email,
                     password = pass,
+                    context=context,
+                    dataStore=dataStore
                 )
             },
             colors = ButtonDefaults.buttonColors(containerColor = Orange),

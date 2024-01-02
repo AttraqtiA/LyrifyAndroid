@@ -77,6 +77,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0") // buat function post get update delete
     implementation("io.coil-kt:coil-compose:2.4.0") // library compose yg menggunakan asyncronus
 
+    //datePicker
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
+
+
     // datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
