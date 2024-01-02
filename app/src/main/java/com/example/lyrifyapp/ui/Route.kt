@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -34,6 +36,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.container.MyDBContainer
+import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailView
 import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
 import com.example.lyrifyapp.ui.screen.Gameplay.CountdownView
@@ -44,7 +48,11 @@ import com.example.lyrifyapp.ui.screen.Intro.Loading1View
 import com.example.lyrifyapp.ui.screen.Intro.Loading2View
 import com.example.lyrifyapp.ui.screen.Intro.Loading3View
 import com.example.lyrifyapp.ui.screen.Intro.LoadingView
+import com.example.lyrifyapp.ui.screen.Intro.LoginView
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
+import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
+import com.example.lyrifyapp.ui.screen.Register.RegisterView
+import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
 
@@ -132,10 +140,23 @@ fun BottomNavBarLyrify(navController: NavController) {
 @Composable
 fun LyrifyRoute() {
 
+    val context = LocalContext.current
+    //datastore
+    val dataStore = DataStoreManager(context)
+
+    LaunchedEffect(Unit){
+        dataStore.getToken.collect{token->
+            if(token != null){
+                MyDBContainer.ACCESS_TOKEN = token
+            }
+        }
+    }
+
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val navController = rememberNavController()
 
-    val context = LocalContext.current
+
 //    val musicViewModel = remember { MusicViewModel() }
 
 //    val musicViewModel: MusicViewModel by viewModels()
@@ -152,7 +173,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.Gameplay.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.RegisterView.name, // GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -178,15 +199,25 @@ fun LyrifyRoute() {
                 Loading3View()
             }
 
-//            composable(Lyrify_Screen.Login.name) {
-//                canNavigateBack = true
-//                LoginView()
-//            }
+            composable(Lyrify_Screen.LoginView.name) {
+                canNavigateBack = true
+                val loginvm: LoginViewModel = viewModel()
+                LoginView(
+                    lvm = loginvm,
+                    navController=navController,
+                    dataStore= dataStore
+                )
+            }
 //
-//            composable(Lyrify_Screen.Register.name) {
-//                canNavigateBack = true
-//                RegisterView()
-//            }
+            composable(Lyrify_Screen.RegisterView.name) {
+                canNavigateBack = true
+                val regivm: RegisterViewModel = viewModel()
+                RegisterView(
+                    rvm = regivm,
+                    navController=navController,
+                    datastore= dataStore
+                )
+            }
 
             composable(Lyrify_Screen.Home.name) {
                 canNavigateBack = true

@@ -138,7 +138,8 @@ fun LoginView(
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Orange,
-                unfocusedBorderColor = Orange
+                unfocusedBorderColor = Orange,
+                textColor = Color.White
             )
         )
         OutlinedTextField(
@@ -172,7 +173,8 @@ fun LoginView(
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Orange,
-                unfocusedBorderColor = Orange
+                unfocusedBorderColor = Orange,
+                textColor = Color.White
             ),
             trailingIcon = {
                 IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
