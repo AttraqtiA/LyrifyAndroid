@@ -1,5 +1,6 @@
-package com.example.lyrifyapp
+package com.example.lyrifyapp.model
 
+import com.example.lyrifyapp.User
 import java.util.Date
 
 data class History(

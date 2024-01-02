@@ -1,8 +1,7 @@
 package com.example.lyrifyapp.ui.screen.Chapter
 
 import androidx.lifecycle.ViewModel
-import com.example.lyrifyapp.Chapter
-import com.example.lyrifyapp.ChapterListUIState
+import com.example.lyrifyapp.model.UIState.ChapterListUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
