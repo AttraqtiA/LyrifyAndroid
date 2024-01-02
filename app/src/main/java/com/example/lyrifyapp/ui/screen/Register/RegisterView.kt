@@ -159,37 +159,37 @@ fun RegisterView(
                         .width(255.dp)
                         .height(30.dp)
                 )
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                    },
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .width(320.dp)
-                        .height(64.dp),
-                    shape = RoundedCornerShape(8.dp),
-
-                    label = {
-                        Text(
-                            text = "Email Address",
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = montserrat,
-                                fontWeight = FontWeight(400),
-                                color = Color(0xFFFFFFFF),
-
-                                textAlign = TextAlign.Center,
-                            ),
-                            modifier = Modifier.padding(top=2.dp),
-
-                            )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Orange,
-                        unfocusedBorderColor = Orange
-                    )
-                )
+//                OutlinedTextField(
+//                    value = email,
+//                    onValueChange = {
+//                        email = it
+//                    },
+//                    modifier = Modifier
+//                        .padding(top = 16.dp)
+//                        .width(320.dp)
+//                        .height(64.dp),
+//                    shape = RoundedCornerShape(8.dp),
+//
+//                    label = {
+//                        Text(
+//                            text = "Email Address",
+//                            style = TextStyle(
+//                                fontSize = 14.sp,
+//                                fontFamily = montserrat,
+//                                fontWeight = FontWeight(400),
+//                                color = Color(0xFFFFFFFF),
+//
+//                                textAlign = TextAlign.Center,
+//                            ),
+//                            modifier = Modifier.padding(top=2.dp),
+//
+//                            )
+//                    },
+//                    colors = TextFieldDefaults.outlinedTextFieldColors(
+//                        focusedBorderColor = Orange,
+//                        unfocusedBorderColor = Orange
+//                    )
+//                )
 
                 CustomTextField(
                     value = name,
