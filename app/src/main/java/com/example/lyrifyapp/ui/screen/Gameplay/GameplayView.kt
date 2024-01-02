@@ -1,5 +1,6 @@
 package com.example.lyrifyapp.ui.screen.Gameplay
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,8 +34,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -46,15 +49,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lyrifyapp.R
-import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardViewModel
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple3
 import com.example.lyrifyapp.ui.theme.Purple4
 import com.example.lyrifyapp.ui.theme.montserrat
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
 
 @Composable
@@ -63,6 +70,9 @@ fun GameplayView(
 
 ) {
     val variabel_UIState by gameplayViewModel.uiState.collectAsState()
+
+    val lifecyleOwner = LocalLifecycleOwner.current
+    var isRestart by remember { mutableStateOf(false) }
 
     var dialogshow by rememberSaveable { mutableStateOf(false) }
 
@@ -166,10 +176,16 @@ fun GameplayView(
                 }
             })
     }
+
     LazyColumn(
         modifier = Modifier.background(color = Background)
     ) {
-        item(content = {
+        item {
+
+            YoutubePlayer(
+                youtubeVidepId = "vxQtby0s7iI",
+                lifecyleOwner = LocalLifecycleOwner.current
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -241,10 +257,129 @@ fun GameplayView(
                 }
             }
 
-            QuestionBox()
+            // QUESTION BOX START
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 24.dp)
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(0xFFFF9100),
+                            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                        ),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Fill in the blanks!",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center,
+                        ),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
 
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                        )
+                ) {
+                    Row(
+                        Modifier.padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            Modifier
+                                .padding(end = 16.dp)
+                                .background(
+                                    color = Color(0xFFFF9100),
+                                    shape = RoundedCornerShape(size = 10.dp)
+                                )
+                                .clickable(
+                                    onClick = {
+                                        isRestart = !isRestart
+                                    }
+                                )
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.speaker),
+                                contentDescription = "image description",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(40.dp)
+                            )
+                        }
+
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = 18.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(800),
+                                        color = Purple3,
+                                        letterSpacing = 0.72.sp
+                                    )
+                                ) {
+                                    append("When you try your ")
+                                }
+
+                                // Apply the specified color to the "....." portion
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = 18.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(800),
+                                        color = Orange,
+                                        letterSpacing = 0.72.sp
+                                    )
+                                ) {
+                                    append(".....")
+                                }
+
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = 18.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(800),
+                                        color = Purple3,
+                                        letterSpacing = 0.72.sp
+                                    )
+                                ) {
+                                    append(" , but you don't succeed")
+                                }
+                            }
+                        )
+                    }
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .heightIn(0.dp, 320.dp),
+                        contentPadding = PaddingValues(horizontal = 32.dp, vertical = 36.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        items(mutableListOf("best", "day", "way", "myself", "self")) {
+                            AnswerOptionBlock(it)
+                        }
+                    }
+
+                }
+            }
+
+            // QUESTION BOX END
             Text(
-                text = "Simply press the audio icon to play back the song lyrics.",
+                text = "The song will be played 3 times",
+                //"Simply press the audio icon to play back the song lyrics.",
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = montserrat,
@@ -281,126 +416,11 @@ fun GameplayView(
                 )
             }
 
-        })
+        }
     }
 
 }
 
-@Composable
-fun QuestionBox() {
-    Column(
-        modifier = Modifier
-            .padding(vertical = 16.dp, horizontal = 24.dp)
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color(0xFFFF9100),
-                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                ),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Fill in the blanks!",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = montserrat,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Center,
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color(0xFFFFFFFF),
-                    shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-                )
-        ) {
-            Row(
-                Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    Modifier
-                        .padding(end = 16.dp)
-                        .background(
-                            color = Color(0xFFFF9100),
-                            shape = RoundedCornerShape(size = 10.dp)
-                        )
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.speaker),
-                        contentDescription = "image description",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .size(40.dp)
-                    )
-                }
-
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 18.sp,
-                                fontFamily = montserrat,
-                                fontWeight = FontWeight(800),
-                                color = Purple3,
-                                letterSpacing = 0.72.sp
-                            )
-                        ) {
-                            append("When you try your ")
-                        }
-
-                        // Apply the specified color to the "....." portion
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 18.sp,
-                                fontFamily = montserrat,
-                                fontWeight = FontWeight(800),
-                                color = Orange,
-                                letterSpacing = 0.72.sp
-                            )
-                        ) {
-                            append(".....")
-                        }
-
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 18.sp,
-                                fontFamily = montserrat,
-                                fontWeight = FontWeight(800),
-                                color = Purple3,
-                                letterSpacing = 0.72.sp
-                            )
-                        ) {
-                            append(" , but you don't succeed")
-                        }
-                    }
-                )
-            }
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .heightIn(0.dp, 320.dp),
-                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 36.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                items(mutableListOf("best", "day", "way", "myself", "self")) {
-                    AnswerOptionBlock(it)
-                }
-            }
-
-        }
-    }
-}
 
 @Composable
 fun TimerView() {
