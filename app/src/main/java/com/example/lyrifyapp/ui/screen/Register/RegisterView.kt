@@ -40,9 +40,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -50,10 +53,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import com.example.lyrifyapp.R
 import com.example.lyrifyapp.data.DataStoreManager
@@ -208,14 +213,53 @@ fun RegisterView(
                         keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                     ),
                 )
-                CustomTextField(
+//                CustomTextField(
+//                    value = pass,
+//                    onValueChanged = { pass = it },
+//                    text = "Password",
+//                    keyboardOptions = KeyboardOptions.Default.copy(
+//                        keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
+//                    ),
+//                )
+
+                OutlinedTextField(
                     value = pass,
-                    onValueChanged = { pass = it },
-                    text = "Password",
+                    onValueChange = {
+                        pass = it
+                    },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .width(320.dp)
+                        .height(64.dp),
+                    shape = RoundedCornerShape(8.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
                     ),
-                )
+                    label = {
+                        Text(
+                            text = "Password",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFFFFFFFF),
+
+                                textAlign = TextAlign.Center,
+                            ),
+                            modifier = Modifier.padding(top = 2.dp),
+
+                            )
+                    },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Orange,
+                        unfocusedBorderColor = Orange,
+                        textColor = Color.White
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    )
+
+
                 CustomTextField(
                     value = bio,
                     onValueChanged = { bio = it },
@@ -312,7 +356,7 @@ fun RegisterView(
                 // Create a string value to store the selected city
                 var mSelectedText by remember { mutableStateOf("") }
 
-//            var mTextFieldSize by remember { mutableStateOf(0)}
+                var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
                 // Up Icon when expanded and down icon when collapsed
                 val icon = if (mExpanded)
@@ -328,8 +372,10 @@ fun RegisterView(
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                         .width(320.dp)
-                        .height(64.dp),
-
+                        .height(64.dp)
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize = coordinates.size.toSize()
+                        },
                     shape = RoundedCornerShape(8.dp),
 
                     label = {
@@ -360,7 +406,8 @@ fun RegisterView(
 //                            tint = Color.White
 //                        )
                             Icon(icon,"Arrow",
-                                Modifier.clickable { mExpanded = !mExpanded }
+                                Modifier.clickable { mExpanded = !mExpanded },
+                                tint = Color.White
                             )
 
                         }
@@ -372,15 +419,18 @@ fun RegisterView(
                         expanded = mExpanded,
                         onDismissRequest = { mExpanded = false },
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .width(with(LocalDensity.current){mTextFieldSize.width.toDp()})
 
                     ) {
                         mGender.forEach { gender ->
-                            DropdownMenuItem(text = {Text(text=gender)},
+                            DropdownMenuItem(
+                                text = {Text(text=gender)},
                                 onClick = {
                                     mSelectedText = gender
                                     mExpanded = false
-                                })
+                                },
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
                         }
 
                     }
