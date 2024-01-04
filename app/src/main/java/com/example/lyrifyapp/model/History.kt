@@ -1,4 +1,4 @@
-package com.example.lyrifyapp
+package com.example.lyrifyapp.model
 
 import java.util.Date
 
