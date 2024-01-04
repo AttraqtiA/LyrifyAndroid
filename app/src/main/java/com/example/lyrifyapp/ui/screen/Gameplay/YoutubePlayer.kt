@@ -24,45 +24,5 @@ fun YoutubePlayer(
     lifecyleOwner: LifecycleOwner,
 ) {
 
-    AndroidView(
-        modifier = Modifier
-            .alpha(0f)
-            .size(0.dp),
 
-        factory = { context ->
-            YouTubePlayerView(context = context).apply {
-                lifecyleOwner.lifecycle.addObserver(this)
-                var count = 1
-
-                addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                    override fun onReady(youTubePlayer: YouTubePlayer) {
-                        youTubePlayer.loadVideo(youtubeVidepId, 0f)
-                    }
-
-                    override fun onStateChange(
-                        youTubePlayer: YouTubePlayer,
-                        state: PlayerConstants.PlayerState
-                    ) {
-                        val isEnded = state == PlayerConstants.PlayerState.ENDED
-                        val isPlayingState = state == PlayerConstants.PlayerState.PLAYING
-                        val isPausedState = state == PlayerConstants.PlayerState.PAUSED
-
-                        // main 3 kali no matter what
-                        if (count < 3 && isEnded) {
-                            count++
-                            youTubePlayer.play()
-                        }
-//                                buat yg isEnded ngebug kalo lg playing dipencet
-//                                if (isPlayingState) {
-//                                    isRestart = false
-//                                }
-//
-//                                if (isRestart && isEnded) {
-//                                    youTubePlayer.play()
-//                                    isRestart = false
-//                                }
-                    }
-                })
-            }
-        })
 }

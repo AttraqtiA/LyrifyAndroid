@@ -72,7 +72,7 @@ fun GameplayView(
     val variabel_UIState by gameplayViewModel.uiState.collectAsState()
 
     val lifecyleOwner = LocalLifecycleOwner.current
-    var isRestart by remember { mutableStateOf(false) }
+    var isRestart by remember { mutableStateOf(true) }
 
     var dialogshow by rememberSaveable { mutableStateOf(false) }
 
@@ -182,10 +182,41 @@ fun GameplayView(
     ) {
         item {
 
-            YoutubePlayer(
-                youtubeVidepId = "vxQtby0s7iI",
-                lifecyleOwner = LocalLifecycleOwner.current
-            )
+            if (isRestart) {
+//                YoutubePlayer(
+//                    youtubeVidepId = "vxQtby0s7iI",
+//                    lifecyleOwner = LocalLifecycleOwner.current
+//                )
+                AndroidView(
+                    modifier = Modifier
+                        .alpha(0f)
+                        .size(0.dp),
+
+                    factory = { context ->
+                        YouTubePlayerView(context = context).apply {
+                            lifecyleOwner.lifecycle.addObserver(this)
+
+                            addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    youTubePlayer.loadVideo("vxQtby0s7iI", 0f)
+                                }
+
+                                override fun onStateChange(
+                                    youTubePlayer: YouTubePlayer,
+                                    state: PlayerConstants.PlayerState
+                                ) {
+                                    val isEnded = state == PlayerConstants.PlayerState.ENDED
+                                    val isPlayingState = state == PlayerConstants.PlayerState.PLAYING
+                                    val isPausedState = state == PlayerConstants.PlayerState.PAUSED
+
+                                    if (isEnded) {
+                                        isRestart = false
+                                    }
+                                }
+                            })
+                        }
+                    })
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
