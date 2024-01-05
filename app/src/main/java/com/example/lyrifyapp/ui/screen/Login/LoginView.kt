@@ -2,6 +2,7 @@ package com.example.lyrifyapp.ui.screen.Intro
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,7 +61,9 @@ import com.example.lyrifyapp.ui.theme.montserrat
 fun LoginView(
     lvm: LoginViewModel,
     navController: NavController,
-    dataStore:DataStoreManager
+    dataStore:DataStoreManager,
+
+    toRegister: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var pass by rememberSaveable { mutableStateOf("") }
@@ -246,6 +249,7 @@ fun LoginView(
                 textAlign = TextAlign.Center,
             ),
             modifier = Modifier.padding(top = 8.dp)
+                .clickable(onClick = toRegister)
         )
 
     }

@@ -1,7 +1,7 @@
 package com.example.lyrifyapp.model.UIState
 
-import com.example.lyrifyapp.model.Song
+import com.example.lyrifyapp.model.Music
 
 data class LevelUIState(
-    val songList: List<Song> = emptyList()
+    val songList: List<Music> = emptyList()
 )

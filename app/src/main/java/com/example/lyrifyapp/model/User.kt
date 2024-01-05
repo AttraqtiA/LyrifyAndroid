@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import java.util.Date
 
 data class User(
-    val id: Int,
     val name: String,
     val gender: String,
     @DrawableRes val image: Int,
