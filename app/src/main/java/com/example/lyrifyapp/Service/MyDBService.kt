@@ -14,8 +14,8 @@ interface MyDBService {
     @POST("login")
     suspend fun login(@Body user: User): APIResponse
 
-    @GET("{id}")
-    suspend fun getUser(@Path("id") id:Int):User
+    @GET("user/{id}")
+    suspend fun getUser(@Path("user/{id}") id:Int):User
 
     @DELETE("logout")
     suspend fun logout():APIResponse
