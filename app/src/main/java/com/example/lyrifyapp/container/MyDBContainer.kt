@@ -44,7 +44,6 @@ class MyDBContainer {
         retrofit.create(MyDBService::class.java)
     }
 
-
     val myDBRepositories: MyDBRepositories by lazy{
         MyDBRepositories(retrofitService)
     }

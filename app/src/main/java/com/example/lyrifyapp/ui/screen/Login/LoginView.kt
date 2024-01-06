@@ -217,12 +217,9 @@ fun LoginView(
                     fontFamily = montserrat,
                     fontWeight = FontWeight(500),
                     color = Color(0xFFFFFFFF),
-
                     textAlign = TextAlign.Center,
                 ),
             )
-
-
         }
 
         val text = buildAnnotatedString {

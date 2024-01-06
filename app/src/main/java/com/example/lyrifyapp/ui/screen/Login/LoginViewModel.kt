@@ -28,11 +28,10 @@ class LoginViewModel: ViewModel() {
             } else if (token.equals("User Not Found", true)) {
                 Toast.makeText(context, token, Toast.LENGTH_LONG).show()
             } else {
-
                 navController.navigate(Lyrify_Screen.Home.name)
-//                {
-//                    popUpTo(Lyrify_Screen.Home.name) { inclusive = true }
-//                }
+                {
+                    popUpTo(Lyrify_Screen.LoginView.name) { inclusive = true }
+                }
                 dataStore.saveToken(token)
 
 

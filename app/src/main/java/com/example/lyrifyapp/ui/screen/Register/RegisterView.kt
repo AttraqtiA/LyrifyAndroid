@@ -77,14 +77,12 @@ import java.util.Calendar
 import java.util.Date
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
     rvm: RegisterViewModel,
     navController: NavController,
-    datastore:DataStoreManager,
-
+    datastore: DataStoreManager,
     toLogin: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -100,18 +98,14 @@ fun RegisterView(
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-    ){
+    ) {
         selectedImage = it
     }
 
-
     val context = LocalContext.current
 
-
-
     Scaffold(
-        
-        content={padding->
+        content = { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -120,39 +114,24 @@ fun RegisterView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.logo),
-//            contentDescription = "Lyrify",
-//            contentScale = ContentScale.FillWidth,
-//            modifier = Modifier.width(96.dp)
-//        )
-
                 Box(
                     contentAlignment = Alignment.BottomEnd,
                 ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(selectedImage)
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(id = R.drawable.profilepicture),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Orange, CircleShape)
-                    .clickable {
-                        galleryLauncher.launch("image/*")
-                    }
-            )
-//                    Image(
-//                        painter = painterResource(id = R.drawable.baseline_account_circle_24),
-//                        contentDescription = "Lyrify",
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier.size(96.dp)
-//                            .clip(CircleShape)
-//                            .clickable(onClick = {/**/ })
-//                    )
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(selectedImage)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(id = R.drawable.profilepicture),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(96.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Orange, CircleShape)
+                            .clickable {
+                                galleryLauncher.launch("image/*")
+                            }
+                    )
                     Icon(
                         imageVector = Icons.Filled.AddCircle,
                         contentDescription = "Add Profile Picture",
@@ -165,8 +144,6 @@ fun RegisterView(
                         tint = Color.White
                     )
                 }
-
-
 
                 Text(
                     text = "Create Your Account", style = TextStyle(
@@ -285,8 +262,7 @@ fun RegisterView(
                         textColor = Color.White
                     ),
                     visualTransformation = PasswordVisualTransformation(),
-                    )
-
+                )
 
                 CustomTextField(
                     value = bio,
@@ -296,7 +272,6 @@ fun RegisterView(
                         keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                     ),
                 )
-
 
                 // Fetching the Local Context
                 val mContext = LocalContext.current
@@ -340,7 +315,7 @@ fun RegisterView(
                         .width(320.dp)
                         .height(64.dp),
                     shape = RoundedCornerShape(8.dp),
-//            readOnly = true,
+                    readOnly = true,
                     label = {
                         Text(
                             text = "Birthdate",
@@ -373,18 +348,14 @@ fun RegisterView(
                         }
                     },
                 )
-
-//
-
                 var mExpanded by remember { mutableStateOf(false) }
 
-
-                val mGender = listOf("Male","Female")
+                val mGender = listOf("Male", "Female")
 
                 // Create a string value to store the selected city
                 var mSelectedText by remember { mutableStateOf("") }
 
-                var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
+                var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
 
                 // Up Icon when expanded and down icon when collapsed
                 val icon = if (mExpanded)
@@ -434,11 +405,11 @@ fun RegisterView(
 //                            contentDescription = "Arrow",
 //                            tint = Color.White
 //                        )
-                            Icon(icon,"Arrow",
+                            Icon(
+                                icon, "Arrow",
                                 Modifier.clickable { mExpanded = !mExpanded },
                                 tint = Color.White
                             )
-
                         }
                     },
                 )
@@ -448,12 +419,12 @@ fun RegisterView(
                         expanded = mExpanded,
                         onDismissRequest = { mExpanded = false },
                         modifier = Modifier
-                            .width(with(LocalDensity.current){mTextFieldSize.width.toDp()})
+                            .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
 
                     ) {
                         mGender.forEach { test ->
                             DropdownMenuItem(
-                                text = {Text(text=test)},
+                                text = { Text(text = test) },
                                 onClick = {
                                     mSelectedText = test
                                     gender = mSelectedText
@@ -468,18 +439,16 @@ fun RegisterView(
 
                 Button(
                     onClick = {
-                        Log.d("aabbcc", "true")
                         rvm.registerbutton(
-
                             name = name,
                             email = email,
                             pass = pass,
                             birthdate = birthdate,
-                            context = context,
-                            dataStore = datastore,
                             gender = mSelectedText,
                             image = selectedImage,
                             bio = bio,
+                            context = context,
+                            dataStore = datastore,
                             navController = navController
                         )
                     },
@@ -501,8 +470,6 @@ fun RegisterView(
                             textAlign = TextAlign.Center,
                         ),
                     )
-
-
                 }
                 val text = buildAnnotatedString {
                     append("Already have an account? ")
@@ -514,7 +481,6 @@ fun RegisterView(
                     ) {
                         append("Login ")
                     }
-
                 }
 
                 Text(
@@ -527,17 +493,14 @@ fun RegisterView(
 
                         textAlign = TextAlign.Center,
                     ),
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
                         .clickable(onClick = toLogin)
-
                 )
-
             }
         },
     )
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -578,11 +541,7 @@ private fun CustomTextField(
             textColor = Color.White
         ),
     )
-
-
 }
-
-
 
 
 //@Preview(showBackground = true, showSystemUi = true)
