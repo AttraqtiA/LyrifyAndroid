@@ -1,19 +1,15 @@
 package com.example.lyrifyapp.ui.screen.Gameplay
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.model.History
 import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.UIState.GameplayUIState
 import com.example.lyrifyapp.model.User
-import com.example.lyrifyapp.model.UserMusic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import java.text.SimpleDateFormat
-import java.time.Year
 
 class GameplayViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(
@@ -33,7 +29,7 @@ class GameplayViewModel : ViewModel() {
                 0,
                 R.drawable.fix_you
             ),
-            UserMusic(
+            History(
                 User(
                     "Yanto Kopling",
                     "Male",
@@ -60,7 +56,8 @@ class GameplayViewModel : ViewModel() {
                     0,
                     R.drawable.fix_you
                 ),
-                0
+                0,
+                SimpleDateFormat("yyyy-MM-dd").parse("2023-09-22")!!
             )
         )
     )
@@ -75,14 +72,14 @@ class GameplayViewModel : ViewModel() {
         }
 
         _uiState.value = _uiState.value.copy(
-            userMusic = _uiState.value.userMusic.copy(
+            history = _uiState.value.history.copy(
                 point = calculateUpdatedPoint(timeLeft, base_point)
             )
         )
 
         // _uiState.value = updatedUiState
 
-        return _uiState.value.userMusic.point > 50
+        return _uiState.value.history.point > 50
     }
 
     fun calculateUpdatedPoint(timeLeft: Int, basePoint: Int): Int {
