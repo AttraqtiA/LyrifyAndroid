@@ -1,9 +1,12 @@
 package com.example.lyrifyapp.ui.screen.Register
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.widget.DatePicker
-import androidx.compose.foundation.Image
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -63,6 +65,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.lyrifyapp.R
 import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.theme.Background
@@ -71,6 +75,7 @@ import com.example.lyrifyapp.ui.theme.Purple80
 import com.example.lyrifyapp.ui.theme.montserrat
 import java.util.Calendar
 import java.util.Date
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,7 +96,19 @@ fun RegisterView(
     var birthdate by rememberSaveable { mutableStateOf("") }
     var gender by rememberSaveable { mutableStateOf("") }
 
+    var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ){
+        selectedImage = it
+    }
+
+
     val context = LocalContext.current
+
+
+
     Scaffold(
         
         content={padding->
@@ -113,26 +130,29 @@ fun RegisterView(
                 Box(
                     contentAlignment = Alignment.BottomEnd,
                 ) {
-//            AsyncImage(
-//                model = ImageRequest.Builder(LocalContext.current)
-//                    .data(selectedImage)
-//                    .crossfade(true)
-//                    .build(),
-//                placeholder = painterResource(id = R.drawable.profilepicture),
-//                contentDescription = "Profile Picture",
-//                modifier = Modifier
-//                    .size(96.dp)
-//                    .clip(CircleShape)
-//                    .border(2.dp, Orange, CircleShape)
-//            )
-                    Image(
-                        painter = painterResource(id = R.drawable.baseline_account_circle_24),
-                        contentDescription = "Lyrify",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(96.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = {/**/ })
-                    )
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(selectedImage)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(id = R.drawable.profilepicture),
+                contentDescription = "Profile Picture",
+                modifier = Modifier
+                    .size(96.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Orange, CircleShape)
+                    .clickable {
+                        galleryLauncher.launch("image/*")
+                    }
+            )
+//                    Image(
+//                        painter = painterResource(id = R.drawable.baseline_account_circle_24),
+//                        contentDescription = "Lyrify",
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.size(96.dp)
+//                            .clip(CircleShape)
+//                            .clickable(onClick = {/**/ })
+//                    )
                     Icon(
                         imageVector = Icons.Filled.AddCircle,
                         contentDescription = "Add Profile Picture",
@@ -299,7 +319,7 @@ fun RegisterView(
 
                 // Declaring a string value to
                 // store date in string format
-//        val mDate = remember { mutableStateOf("") }
+//                val mDate = remember { mutableStateOf("") }
 
                 // Declaring DatePickerDialog and setting
                 // initial values as current values (present year, month and day)
@@ -359,7 +379,7 @@ fun RegisterView(
                 var mExpanded by remember { mutableStateOf(false) }
 
 
-                val mGender = listOf("Male","Female","Others")
+                val mGender = listOf("Male","Female")
 
                 // Create a string value to store the selected city
                 var mSelectedText by remember { mutableStateOf("") }
@@ -374,6 +394,7 @@ fun RegisterView(
 
                 OutlinedTextField(
                     value = mSelectedText,
+                    readOnly = true,
                     onValueChange = {
                         mSelectedText = it
                     },
@@ -444,7 +465,6 @@ fun RegisterView(
                     }
                 }
 
-
                 Button(
                     onClick = {
                         rvm.registerbutton(
@@ -455,6 +475,8 @@ fun RegisterView(
                             context = context,
                             dataStore = datastore,
                             gender = gender,
+                            image = selectedImage,
+                            navController = navController
                         )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Orange),

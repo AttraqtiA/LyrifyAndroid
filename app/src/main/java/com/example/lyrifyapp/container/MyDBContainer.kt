@@ -24,7 +24,7 @@ class MyDBContainer {
     }
     //master URL
     //ipv4 address (BASE_URL diganti setiap kali pindah network/wifi)
-    private val BASE_URL = "lyrify.online/api/"
+    private val BASE_URL = "https://lyrify.online/api/"
 
 
     //token seperti kuncinya

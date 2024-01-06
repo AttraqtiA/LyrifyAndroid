@@ -36,7 +36,7 @@ interface MyDBService {
 
     @DELETE("delete_user/{id}")
     suspend fun delete():APIResponse
-    
+
 //    @GET("user_music")
 //    suspend fun usermusic(): UserMusic
 //

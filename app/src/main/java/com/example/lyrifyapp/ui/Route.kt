@@ -191,7 +191,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.Countdown.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.RegisterView.name, // GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 
