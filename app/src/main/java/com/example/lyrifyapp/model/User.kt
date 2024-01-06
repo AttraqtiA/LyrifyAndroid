@@ -1,16 +1,17 @@
 package com.example.lyrifyapp.model
 
-import java.util.Date
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class User(
     val name: String,
     val gender: String,
 //    @DrawableRes
-    val image: String,
+    val image: Any?,
     val email: String,
     val password: String,
-    val birthdate: Date,
-    val registration_date: Date,
+    val birthdate: String,
+//    val registration_date: String,
     val description: String,
     val achievement: Int
 )

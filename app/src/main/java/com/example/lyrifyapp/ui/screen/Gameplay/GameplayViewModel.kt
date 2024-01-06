@@ -33,11 +33,10 @@ class GameplayViewModel : ViewModel() {
                 User(
                     "Yanto Kopling",
                     "Male",
-                    R.drawable.edsheeran,
+                    "",
                     "halo@gmail.com",
                     "halow1232",
-                    SimpleDateFormat("yyyy-MM-dd").parse("2023-09-22")!!,
-                    SimpleDateFormat("yyyy-MM-dd").parse("2023-09-22")!!,
+                    "2023-09-22",
                     "aku seorang petualang",
                     3
                 ),

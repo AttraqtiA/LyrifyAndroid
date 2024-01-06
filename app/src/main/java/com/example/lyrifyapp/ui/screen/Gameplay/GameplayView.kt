@@ -136,7 +136,7 @@ fun GameplayView(
                             )
                         }
                         Text(
-                            text = "+${variabel_UIState.userMusic.point}\npoints",
+                            text = "+${variabel_UIState.history.point}\npoints",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 18.4.sp,

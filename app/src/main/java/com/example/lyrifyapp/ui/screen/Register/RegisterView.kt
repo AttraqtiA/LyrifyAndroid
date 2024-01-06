@@ -1,7 +1,7 @@
 package com.example.lyrifyapp.ui.screen.Register
 
 import android.app.DatePickerDialog
-import android.net.Uri
+import android.util.Log
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -96,7 +96,7 @@ fun RegisterView(
     var birthdate by rememberSaveable { mutableStateOf("") }
     var gender by rememberSaveable { mutableStateOf("") }
 
-    var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var selectedImage by rememberSaveable { mutableStateOf<Any?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -451,11 +451,12 @@ fun RegisterView(
                             .width(with(LocalDensity.current){mTextFieldSize.width.toDp()})
 
                     ) {
-                        mGender.forEach { gender ->
+                        mGender.forEach { test ->
                             DropdownMenuItem(
-                                text = {Text(text=gender)},
+                                text = {Text(text=test)},
                                 onClick = {
-                                    mSelectedText = gender
+                                    mSelectedText = test
+                                    gender = mSelectedText
                                     mExpanded = false
                                 },
                                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -467,15 +468,18 @@ fun RegisterView(
 
                 Button(
                     onClick = {
+                        Log.d("aabbcc", "true")
                         rvm.registerbutton(
+
                             name = name,
                             email = email,
                             pass = pass,
                             birthdate = birthdate,
                             context = context,
                             dataStore = datastore,
-                            gender = gender,
+                            gender = mSelectedText,
                             image = selectedImage,
+                            bio = bio,
                             navController = navController
                         )
                     },
