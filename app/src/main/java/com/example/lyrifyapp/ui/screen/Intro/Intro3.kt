@@ -35,7 +35,7 @@ import com.example.lyrifyapp.ui.theme.Purple2
 import com.example.lyrifyapp.ui.theme.montserrat
 
 @Composable
-fun Loading2View(){
+fun Loading2View(ButtonClicked: () -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,7 +83,7 @@ fun Loading2View(){
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.asset_2),
@@ -111,7 +111,7 @@ fun Loading2View(){
 
                 )
 
-                Button(onClick = { /**/},
+                Button(onClick = ButtonClicked,
                     colors = ButtonDefaults.buttonColors(containerColor = Purple2)) {
                     Text(
                         text = "Next",
@@ -125,16 +125,13 @@ fun Loading2View(){
                         )
                     )
                 }
-
             }
-
         }
-
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun loading2preview(){
-    Loading2View()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun loading2preview(){
+//    Loading2View()
+//}

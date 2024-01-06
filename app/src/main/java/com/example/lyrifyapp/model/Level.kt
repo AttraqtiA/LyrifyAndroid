@@ -1,4 +1,6 @@
-package com.example.lyrifyapp
+package com.example.lyrifyapp.model
+
+import com.example.lyrifyapp.Music
 
 data class Level(
     val id: Int,

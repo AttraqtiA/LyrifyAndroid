@@ -1,4 +1,4 @@
-package com.example.lyrifyapp
+package com.example.lyrifyapp.model
 
 import androidx.annotation.DrawableRes
 

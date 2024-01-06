@@ -35,7 +35,7 @@ import com.example.lyrifyapp.ui.theme.Purple2
 import com.example.lyrifyapp.ui.theme.montserrat
 
 @Composable
-fun Loading3View(){
+fun Loading3View(ButtonClicked: () -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,10 +82,10 @@ fun Loading3View(){
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.asset_2),
+                painter = painterResource(id = R.drawable.asset_3),
                 contentDescription = "Listener",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
@@ -100,17 +100,15 @@ fun Loading3View(){
             ){
 
                 Image(
-                    painter = painterResource(id = R.drawable.pagination_2),
+                    painter = painterResource(id = R.drawable.pagination_3),
                     contentDescription = "image description",
                     modifier = Modifier
                         .padding(8.dp)
                         .width(40.dp)
                         .height(10.dp)
-
-
                 )
 
-                Button(onClick = { /**/},
+                Button(onClick = ButtonClicked,
                     colors = ButtonDefaults.buttonColors(containerColor = Purple2)) {
                     Text(
                         text = "Getting Started",
@@ -132,8 +130,8 @@ fun Loading3View(){
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun loading2preview(){
-    Loading3View()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun loading3preview(){
+//    Loading3View()
+//}

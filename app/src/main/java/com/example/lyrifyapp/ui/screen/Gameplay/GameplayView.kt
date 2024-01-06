@@ -1,6 +1,7 @@
 package com.example.lyrifyapp.ui.screen.Gameplay
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -19,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -28,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.ui.Lyrify_Screen
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.Orange
@@ -66,13 +71,20 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun GameplayView(
-    gameplayViewModel: GameplayViewModel = viewModel()
+    gameplayViewModel: GameplayViewModel = viewModel(),
 
+    navigateBack: () -> Unit,
+    toChapterDetail: () -> Unit
 ) {
     val variabel_UIState by gameplayViewModel.uiState.collectAsState()
 
+    var timeLeft by rememberSaveable { mutableIntStateOf(30) }
+    var isDone by rememberSaveable { mutableStateOf(false) }
+    var isCorrect by rememberSaveable { mutableStateOf(false) }
+    var indexDefault by rememberSaveable { mutableIntStateOf(99) }
+
     val lifecyleOwner = LocalLifecycleOwner.current
-    var isRestart by remember { mutableStateOf(true) }
+    var isRestart by rememberSaveable { mutableStateOf(true) }
 
     var dialogshow by rememberSaveable { mutableStateOf(false) }
 
@@ -81,6 +93,7 @@ fun GameplayView(
             containerColor = Background,
             onDismissRequest = {
                 dialogshow = false
+                toChapterDetail()
             }, title = {
 
             }, text = {
@@ -105,15 +118,25 @@ fun GameplayView(
                             ),
                             modifier = Modifier.padding(end = 16.dp)
                         )
-                        Image(
-                            painter = painterResource(id = R.drawable.correct),
-                            contentDescription = "CORRECT OR INCORRECT",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(120.dp)
-                        )
+                        if (isCorrect) {
+                            Image(
+                                painter = painterResource(id = R.drawable.correct),
+                                contentDescription = "CORRECT",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(120.dp)
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.incorrect),
+                                contentDescription = "INCORRECT",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(120.dp)
+                            )
+                        }
                         Text(
-                            text = "+20\npoints",
+                            text = "+${variabel_UIState.userMusic.point}\npoints",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
@@ -127,35 +150,62 @@ fun GameplayView(
                         )
                     }
 
-                    Text(
-                        text = "Correct!\n Well done!",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            lineHeight = 27.6.sp,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(800),
-                            color = Color(0xFFFFFFFF),
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 0.96.sp,
+                    if (isCorrect) {
+                        Text(
+                            text = "Correct!\n Well done!",
+                            style = TextStyle(
+                                fontSize = 24.sp,
+                                lineHeight = 27.6.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(800),
+                                color = Color(0xFFFFFFFF),
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.96.sp,
+                            )
                         )
-                    )
-                    Text(
-                        text = "You've got the lyrics right. Keep it up, musical maestro!",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(500),
-                            color = Color(0xFFFFFFFF),
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 0.56.sp,
+                        Text(
+                            text = "You've got the lyrics right. Keep it up, musical maestro!",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(500),
+                                color = GreenCorrect,
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.56.sp,
+                            )
                         )
-                    )
+                    } else {
+                        Text(
+                            text = "Oops! Not quite\n right this time.",
+                            style = TextStyle(
+                                fontSize = 24.sp,
+                                lineHeight = 27.6.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(800),
+                                color = Color(0xFFFFFFFF),
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.96.sp,
+                            )
+                        )
+                        Text(
+                            text = "Keep going, the musical mystery awaits your next guess!",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(500),
+                                color = Color.Red,
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.56.sp,
+                            )
+                        )
+                    }
                 }
 
             }, confirmButton = {
                 Button(
                     onClick = {
                         dialogshow = false
+                        toChapterDetail()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -178,15 +228,12 @@ fun GameplayView(
     }
 
     LazyColumn(
-        modifier = Modifier.background(color = Background)
+        modifier = Modifier.fillMaxSize()
+            .background(color = Background)
     ) {
         item {
 
             if (isRestart) {
-//                YoutubePlayer(
-//                    youtubeVidepId = "vxQtby0s7iI",
-//                    lifecyleOwner = LocalLifecycleOwner.current
-//                )
                 AndroidView(
                     modifier = Modifier
                         .alpha(0f)
@@ -198,7 +245,7 @@ fun GameplayView(
 
                             addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                                 override fun onReady(youTubePlayer: YouTubePlayer) {
-                                    youTubePlayer.loadVideo("vxQtby0s7iI", 0f)
+                                    youTubePlayer.loadVideo(variabel_UIState.music.youtube_link, 0f)
                                 }
 
                                 override fun onStateChange(
@@ -206,8 +253,6 @@ fun GameplayView(
                                     state: PlayerConstants.PlayerState
                                 ) {
                                     val isEnded = state == PlayerConstants.PlayerState.ENDED
-                                    val isPlayingState = state == PlayerConstants.PlayerState.PLAYING
-                                    val isPausedState = state == PlayerConstants.PlayerState.PAUSED
 
                                     if (isEnded) {
                                         isRestart = false
@@ -223,10 +268,10 @@ fun GameplayView(
                     .height(360.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.edsheeran),
+                    painter = painterResource(id = variabel_UIState.music.image),
                     contentDescription = "Song Cover",
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
 
@@ -234,14 +279,17 @@ fun GameplayView(
                     painter = painterResource(id = R.drawable.blackblur),
                     contentDescription = "Black Blur",
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .clickable{
+                            navigateBack()
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -260,10 +308,39 @@ fun GameplayView(
                         .align(Alignment.BottomCenter),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TimerView()
+
+                    if (timeLeft == 0) {
+                        isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                        isDone = true
+                        dialogshow = true
+                    }
+
+                    LaunchedEffect(key1 = timeLeft, key2 = isDone) {
+                        while (timeLeft > 0 && !isDone) {
+                            delay(1000L)
+                            timeLeft--
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .background(color = Color(0xFF240046), shape = RoundedCornerShape(8.dp))
+                    ) {
+                        Text(
+                            text = "${timeLeft}",
+                            style = TextStyle(
+                                fontSize = 30.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(700),
+                                color = Purple4,
+                                textAlign = TextAlign.Center,
+                            ),
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
 
                     Text(
-                        text = "Thinking Out Loud",
+                        text = variabel_UIState.music.title,
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontFamily = montserrat,
@@ -275,7 +352,7 @@ fun GameplayView(
                     )
 
                     Text(
-                        text = "Ed Sheeran",
+                        text = variabel_UIState.music.artist,
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontFamily = montserrat,
@@ -322,6 +399,7 @@ fun GameplayView(
                             color = Color(0xFFFFFFFF),
                             shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
                         )
+                        .padding(vertical = 24.dp)
                 ) {
                     Row(
                         Modifier.padding(16.dp),
@@ -343,28 +421,30 @@ fun GameplayView(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.speaker),
-                                contentDescription = "image description",
+                                contentDescription = "restart",
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .size(40.dp)
                             )
                         }
 
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 18.sp,
-                                        fontFamily = montserrat,
-                                        fontWeight = FontWeight(800),
-                                        color = Purple3,
-                                        letterSpacing = 0.72.sp
-                                    )
-                                ) {
-                                    append("When you try your ")
-                                }
+                        val lyrics = variabel_UIState.music.lyrics
+                        val placeholder = "....."
 
-                                // Apply the specified color to the "....." portion
+                        val annotatedString = buildAnnotatedString {
+                            val index = lyrics.indexOf(placeholder)
+
+                            withStyle(
+                                style = SpanStyle(
+                                    fontSize = 18.sp,
+                                    fontFamily = montserrat,
+                                    fontWeight = FontWeight(800),
+                                    color = Purple3,
+                                    letterSpacing = 0.72.sp
+                                )
+                            ) {
+                                append(lyrics.substring(0, index)) // Purple3
+
                                 withStyle(
                                     style = SpanStyle(
                                         fontSize = 18.sp,
@@ -374,22 +454,19 @@ fun GameplayView(
                                         letterSpacing = 0.72.sp
                                     )
                                 ) {
-                                    append(".....")
+                                    if (index != -1) {
+                                        append(placeholder) // Orange
+                                    } else {
+                                        append(lyrics)
+                                    }
                                 }
 
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 18.sp,
-                                        fontFamily = montserrat,
-                                        fontWeight = FontWeight(800),
-                                        color = Purple3,
-                                        letterSpacing = 0.72.sp
-                                    )
-                                ) {
-                                    append(" , but you don't succeed")
-                                }
+                                append(lyrics.substring(index + placeholder.length)) // Purple3
                             }
-                        )
+                        }
+
+                        Text(text = annotatedString)
+
                     }
 
                     LazyVerticalGrid(
@@ -399,8 +476,35 @@ fun GameplayView(
                         contentPadding = PaddingValues(horizontal = 32.dp, vertical = 36.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        items(mutableListOf("best", "day", "way", "myself", "self")) {
-                            AnswerOptionBlock(it)
+                        itemsIndexed(variabel_UIState.music.options) {index, it->
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = index
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = it,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
                         }
                     }
 
@@ -409,8 +513,7 @@ fun GameplayView(
 
             // QUESTION BOX END
             Text(
-                text = "The song will be played 3 times",
-                //"Simply press the audio icon to play back the song lyrics.",
+                text = "Simply press the audio icon to play back the song.",
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = montserrat,
@@ -424,97 +527,15 @@ fun GameplayView(
                     .padding(start = 24.dp, end = 24.dp, bottom = 8.dp)
             )
 
-            Button(
-                onClick = {
-                    dialogshow = true
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .background(color = Color(0xFFFF9100), shape = RoundedCornerShape(8.dp)),
-                colors = ButtonDefaults.buttonColors(Orange)
-            ) {
-                Text(
-                    text = "Check",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = montserrat,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 0.8.sp,
-                    ),
-                )
-            }
-
         }
     }
 
 }
 
 
-@Composable
-fun TimerView() {
-    var timeLeft by remember { mutableStateOf(30) }
-    var isPaused by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = timeLeft, key2 = isPaused) {
-        while (timeLeft > 0 && !isPaused) {
-            delay(1000L)
-            timeLeft--
-        }
-    }
-
-    Row(
-        modifier = Modifier
-            .background(color = Color(0xFF240046), shape = RoundedCornerShape(8.dp))
-    ) {
-        Text(
-            text = "${timeLeft}",
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontFamily = montserrat,
-                fontWeight = FontWeight(700),
-                color = Purple4,
-                textAlign = TextAlign.Center,
-            ),
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-    }
-
-}
-
-@Composable
-fun AnswerOptionBlock(option: String) {
-    Row(
-        modifier = Modifier
-            .clickable(
-                onClick = {
-
-                }
-            )
-            .padding(4.dp)
-            .background(color = Purple3, shape = RoundedCornerShape(8.dp))
-            .padding(4.dp)
-            .wrapContentSize(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = option,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontFamily = montserrat,
-                fontWeight = FontWeight(700),
-                color = Color(0xFFFFFFFF),
-                textAlign = TextAlign.Center,
-                letterSpacing = 0.8.sp,
-            )
-        )
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GameplayPreview() {
-    GameplayView()
-}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun GameplayPreview() {
+//    GameplayView { navController.navigate(Lyrify_Screen.ChapterDetail.name) }
+//}

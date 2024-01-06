@@ -1,5 +1,6 @@
 package com.example.lyrifyapp.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
@@ -51,10 +52,12 @@ import com.example.lyrifyapp.ui.screen.Intro.LoadingView
 import com.example.lyrifyapp.ui.screen.Intro.LoginView
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
 import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
+import com.example.lyrifyapp.ui.screen.Profile.ProfileView
 import com.example.lyrifyapp.ui.screen.Register.RegisterView
 import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
+import kotlinx.coroutines.delay
 
 enum class Lyrify_Screen() {
     Intro1,
@@ -110,7 +113,11 @@ fun BottomNavBarLyrify(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.title,
-                        modifier = if(item == BottomNavItem.Leaderboard) { Modifier.size(40.dp) } else { Modifier.size(32.dp) }
+                        modifier = if (item == BottomNavItem.Leaderboard) {
+                            Modifier.size(40.dp)
+                        } else {
+                            Modifier.size(32.dp)
+                        }
                     )
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
@@ -144,24 +151,35 @@ fun LyrifyRoute() {
     //datastore
     val dataStore = DataStoreManager(context)
 
-    LaunchedEffect(Unit){
-        dataStore.getToken.collect{token->
-            if(token != null){
+    LaunchedEffect(Unit) {
+        dataStore.getToken.collect { token ->
+            if (token != null) {
                 MyDBContainer.ACCESS_TOKEN = token
             }
         }
     }
 
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val navController = rememberNavController()
-
 
 //    val musicViewModel = remember { MusicViewModel() }
 
 //    val musicViewModel: MusicViewModel by viewModels()
 
     var canNavigateBack by remember { mutableStateOf(false) }
+
+    BackHandler {
+        when (navController.currentBackStackEntry?.destination?.route) {
+            Lyrify_Screen.Gameplay.name -> {
+                navController.popBackStack(Lyrify_Screen.ChapterDetail.name, inclusive = true)
+//                navController.navigate(Lyrify_Screen.ChapterDetail.name)
+            }
+            else -> {
+                navController.popBackStack()
+            }
+        }
+    }
+
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -173,7 +191,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.RegisterView.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.Countdown.name, // GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -181,41 +199,47 @@ fun LyrifyRoute() {
                 Lyrify_Screen.Intro1.name
             ) {
                 canNavigateBack = false
+                LaunchedEffect(Unit) {
+                    delay(1000L)
+                    navController.navigate(Lyrify_Screen.Intro2.name)
+                }
                 LoadingView()
             }
 
             composable(Lyrify_Screen.Intro2.name) {
                 canNavigateBack = false
-                Loading1View()
+                Loading1View { navController.navigate(Lyrify_Screen.Intro3.name) }
             }
 
             composable(Lyrify_Screen.Intro3.name) {
                 canNavigateBack = false
-                Loading2View()
+                Loading2View { navController.navigate(Lyrify_Screen.Intro4.name) }
             }
 
             composable(Lyrify_Screen.Intro4.name) {
                 canNavigateBack = false
-                Loading3View()
+                Loading3View { navController.navigate(Lyrify_Screen.LoginView.name) }
             }
 
             composable(Lyrify_Screen.LoginView.name) {
-                canNavigateBack = true
+                canNavigateBack = false
                 val loginvm: LoginViewModel = viewModel()
                 LoginView(
                     lvm = loginvm,
-                    navController=navController,
-                    dataStore= dataStore
+                    navController = navController,
+                    dataStore = dataStore,
+                    toRegister = { navController.navigate(Lyrify_Screen.RegisterView.name) }
                 )
             }
 //
             composable(Lyrify_Screen.RegisterView.name) {
-                canNavigateBack = true
+                canNavigateBack = false
                 val regivm: RegisterViewModel = viewModel()
                 RegisterView(
                     rvm = regivm,
-                    navController=navController,
-                    datastore= dataStore
+                    navController = navController,
+                    datastore = dataStore,
+                    toLogin = { navController.navigate(Lyrify_Screen.LoginView.name) }
                 )
             }
 
@@ -224,10 +248,10 @@ fun LyrifyRoute() {
                 HomeView()
             }
 
-//            composable(Lyrify_Screen.Profile.name) {
-//                canNavigateBack = true
-//                GameplayView()
-//            }
+            composable(Lyrify_Screen.Profile.name) {
+                canNavigateBack = true
+                ProfileView()
+            }
 
             composable(Lyrify_Screen.ChapterList.name) {
                 canNavigateBack = true
@@ -246,12 +270,20 @@ fun LyrifyRoute() {
 
             composable(Lyrify_Screen.Countdown.name) {
                 canNavigateBack = false
+                LaunchedEffect(Unit) {
+                    delay(4030L)
+                    navController.navigate(Lyrify_Screen.Gameplay.name)
+                }
                 CountdownView()
             }
 
             composable(Lyrify_Screen.Gameplay.name) {
                 canNavigateBack = false
-                GameplayView()
+                navController.clearBackStack(Lyrify_Screen.Countdown.name)
+                GameplayView (
+                    navigateBack = { navController.navigateUp() },
+                    toChapterDetail = { navController.navigate(Lyrify_Screen.ChapterDetail.name) }
+                )
             }
 
             composable(Lyrify_Screen.Result.name) {
