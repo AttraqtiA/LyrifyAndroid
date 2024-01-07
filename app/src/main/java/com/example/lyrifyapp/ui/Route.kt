@@ -44,13 +44,17 @@ import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
 import com.example.lyrifyapp.ui.screen.Gameplay.CountdownView
 import com.example.lyrifyapp.ui.screen.Gameplay.GameplayView
 import com.example.lyrifyapp.ui.screen.Gameplay.ResultView
+import com.example.lyrifyapp.ui.screen.Home.HomeUIState
 import com.example.lyrifyapp.ui.screen.Home.HomeView
+import com.example.lyrifyapp.ui.screen.Home.HomeViewModel
 import com.example.lyrifyapp.ui.screen.Intro.Loading1View
 import com.example.lyrifyapp.ui.screen.Intro.Loading2View
 import com.example.lyrifyapp.ui.screen.Intro.Loading3View
 import com.example.lyrifyapp.ui.screen.Intro.LoadingView
 import com.example.lyrifyapp.ui.screen.Intro.LoginView
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
+import com.example.lyrifyapp.ui.screen.LoadingErrorView
+import com.example.lyrifyapp.ui.screen.Login.LoginUIState
 import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
 import com.example.lyrifyapp.ui.screen.Profile.ProfileView
 import com.example.lyrifyapp.ui.screen.Register.RegisterView
@@ -73,12 +77,14 @@ enum class Lyrify_Screen() {
     Countdown,
     Gameplay,
     Result,
-    Profile
+    Profile,
+    LoadingView
 }
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
     object Home :
         BottomNavItem("Home", R.drawable.homepage, Lyrify_Screen.Home.name)
+
     object ChapterList :
         BottomNavItem("ChapterList", R.drawable.musical_notes, Lyrify_Screen.ChapterList.name)
 
@@ -176,6 +182,7 @@ fun LyrifyRoute() {
                 navController.popBackStack(Lyrify_Screen.ChapterDetail.name, inclusive = true)
 //                navController.navigate(Lyrify_Screen.ChapterDetail.name)
             }
+
             else -> {
                 navController.popBackStack()
             }
@@ -193,7 +200,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.Intro1.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.RegisterView.name, // GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -224,16 +231,16 @@ fun LyrifyRoute() {
             }
 
             composable(Lyrify_Screen.LoginView.name) {
-                canNavigateBack = false
-                val loginvm: LoginViewModel = viewModel()
+                val loginViewModel: LoginViewModel = viewModel()
                 LoginView(
-                    lvm = loginvm,
+                    lvm = loginViewModel,
                     navController = navController,
                     dataStore = dataStore,
                     toRegister = { navController.navigate(Lyrify_Screen.RegisterView.name) }
                 )
+                canNavigateBack = false
             }
-//
+
             composable(Lyrify_Screen.RegisterView.name) {
                 canNavigateBack = false
                 val regivm: RegisterViewModel = viewModel()
@@ -245,9 +252,29 @@ fun LyrifyRoute() {
                 )
             }
 
-            composable(Lyrify_Screen.Home.name) {
-                canNavigateBack = true
-                HomeView()
+            composable(Lyrify_Screen.Home.name + "/user/{id}") { backStackEntry ->
+                val homeViewModel: HomeViewModel = viewModel()
+                homeViewModel.getUser(
+                    backStackEntry.arguments?.getString("id")!!.toInt()
+                    // cara Anda mengakses nilai argumen "movieId" yang dikirim melalui navigasi dan mengonversinya menjadi tipe data integer sehingga Anda dapat menggunakannya dalam tampilan MovieDetailView atau pemrosesan data lainnya.
+                )
+                val status = homeViewModel.homeUIState
+                when (status) {
+                    is HomeUIState.Loading -> LoadingView()
+                    is HomeUIState.Success -> {
+                        HomeView(
+                            user = status.data,
+                        )
+                        canNavigateBack = true
+                        // ini untuk cek apakah ketika pindah ke halaman ini ada tumpukan atau halaman sebelumnya,
+                        // kalau ada maka canNavigateBack akan menjadi true dan topAppBar akan ditampilkan sedangkan bottomAppBar tidak akan ditampilkan
+                    }
+                    is HomeUIState.Error -> {}
+                }
+//                canNavigateBack = true
+//                HomeView{
+//                    navController.navigate(Lyrify_Screen.LoginView.name)
+//                }
             }
 
             composable(Lyrify_Screen.Profile.name) {
@@ -282,7 +309,7 @@ fun LyrifyRoute() {
             composable(Lyrify_Screen.Gameplay.name) {
                 canNavigateBack = false
                 navController.clearBackStack(Lyrify_Screen.Countdown.name)
-                GameplayView (
+                GameplayView(
                     navigateBack = { navController.navigateUp() },
                     toChapterDetail = { navController.navigate(Lyrify_Screen.ChapterDetail.name) }
                 )
@@ -291,6 +318,11 @@ fun LyrifyRoute() {
             composable(Lyrify_Screen.Result.name) {
                 canNavigateBack = false
                 ResultView()
+            }
+
+            composable(Lyrify_Screen.LoadingView.name) {
+                canNavigateBack = false
+                LoadingErrorView()
             }
         }
     }

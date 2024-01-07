@@ -1,5 +1,6 @@
 package com.example.lyrifyapp.model
 
+import android.net.Uri
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -7,7 +8,7 @@ data class User(
     val name: String,
     val gender: String,
 //    @DrawableRes
-    val image: Any?,
+    val image: String?,
     val email: String,
     val password: String,
     val birthdate: String,

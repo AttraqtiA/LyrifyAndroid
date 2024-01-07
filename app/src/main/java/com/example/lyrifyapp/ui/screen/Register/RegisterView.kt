@@ -1,6 +1,7 @@
 package com.example.lyrifyapp.ui.screen.Register
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.util.Log
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -94,7 +95,7 @@ fun RegisterView(
     var birthdate by rememberSaveable { mutableStateOf("") }
     var gender by rememberSaveable { mutableStateOf("") }
 
-    var selectedImage by rememberSaveable { mutableStateOf<Any?>(null) }
+    var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),

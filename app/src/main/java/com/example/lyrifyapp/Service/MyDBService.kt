@@ -15,27 +15,29 @@ import retrofit2.http.Path
 
 interface MyDBService {
 
-    //login logout
-    @POST("login")
-    suspend fun login(@Body user: User): APIResponse
-
-
-    @DELETE("logout")
-    suspend fun logout():APIResponse
-
-    //register
-    @GET("all_user")
-    suspend fun user(): User
-    @GET("user/{id}")
-    suspend fun getUser(@Path("user/{id}") id:Int):User
+    //REGISTER
     @POST("create_user")
     suspend fun register(@Body user: User): APIResponse
 
+    //LOGIN
+    @POST("login")
+    suspend fun login(@Body user: User): APIResponse
+
+    //LOGOUT
+    @DELETE("logout")
+    suspend fun logout(): APIResponse
+
+    @GET("all_user")
+    suspend fun user(): User
+
+    @GET("user/{id}")
+    suspend fun getUser(@Path("user/{id}") id: Int): User
+
     @PATCH("update_user/{id}")
-    suspend fun update():APIResponse
+    suspend fun update(): APIResponse
 
     @DELETE("delete_user/{id}")
-    suspend fun delete():APIResponse
+    suspend fun delete(): APIResponse
 
 //    @GET("user_music")
 //    suspend fun usermusic(): UserMusic
@@ -55,11 +57,12 @@ interface MyDBService {
 
     @POST("create_history")
     suspend fun register(@Body history: History): APIResponse
+
     @PATCH("update_history/{id}")
-    suspend fun updatehistory():APIResponse
+    suspend fun updatehistory(): APIResponse
 
     @DELETE("delete_history/{id}")
-    suspend fun deletehistory():APIResponse
+    suspend fun deletehistory(): APIResponse
 
 //chapter
 
@@ -73,17 +76,4 @@ interface MyDBService {
     //music
     @GET("musics")
     suspend fun musics(): Music
-
-
-
-
-
-
-    
-
-//    Route::post('create_user', [UserController::class, 'createUser']);
-//    Route::post('login', [AuthenticationController::class, 'login'])->name('login');
-//    Route::get('user/{id}', [UserController::class, 'getUser']);
-
-
 }

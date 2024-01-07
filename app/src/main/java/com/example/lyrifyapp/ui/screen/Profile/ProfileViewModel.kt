@@ -1,7 +1,6 @@
 package com.example.lyrifyapp.ui.screen.Profile
 
 import androidx.lifecycle.ViewModel
-import com.example.lyrifyapp.model.UIState.HomeUIState
 import com.example.lyrifyapp.model.UIState.ProfileUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

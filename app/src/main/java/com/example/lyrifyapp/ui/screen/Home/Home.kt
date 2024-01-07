@@ -1,6 +1,9 @@
 package com.example.lyrifyapp.ui.screen.Home
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +33,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,23 +49,30 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.ChapColor
 import com.example.lyrifyapp.ui.theme.ChapDesc
 import com.example.lyrifyapp.ui.theme.GreenCorrect
-import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.montserrat
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(homeViewModel: HomeViewModel = viewModel()) {
+fun HomeView(user: User) {
+
+    var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ) {
+        selectedImage = it
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -85,12 +99,24 @@ fun HomeView(homeViewModel: HomeViewModel = viewModel()) {
                                 .height(70.dp)
                                 .clip(CircleShape)
                         )
+//                        AsyncImage(
+//                            model = ImageRequest.Builder(LocalContext.current)
+//                                .data(movie.poster_path)
+//                                .crossfade(true)
+//                                .build(),
+//                            placeholder = painterResource(id = R.drawable.profilepicture),
+//                            contentDescription = "Profile Picture",
+//                            modifier = Modifier
+//                                .width(70.dp)
+//                                .height(70.dp)
+//                                .clip(CircleShape)
+//                        )
                         Spacer(Modifier.width(12.dp))
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Hi Louis!",
+                                text = "Hi ${user.name}",
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontFamily = montserrat,
@@ -463,10 +489,11 @@ fun ChapterCard(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HomePreview() {
-    LyrifyAppTheme {
-        HomeView()
-    }
-}
+
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun HomePreview() {
+//    LyrifyAppTheme {
+//        HomeView()
+//    }
+//}

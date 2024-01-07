@@ -62,7 +62,6 @@ fun LoginView(
     lvm: LoginViewModel,
     navController: NavController,
     dataStore:DataStoreManager,
-
     toRegister: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }

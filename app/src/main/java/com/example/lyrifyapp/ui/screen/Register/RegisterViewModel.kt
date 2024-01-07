@@ -1,8 +1,10 @@
 package com.example.lyrifyapp.ui.screen.Register
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,51 +13,102 @@ import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.ui.Lyrify_Screen
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.InputStream
 
 
 class RegisterViewModel : ViewModel() {
+
+    private suspend fun createTempFileFromUri(context: Context, uri: Uri): File {
+        val tempFile = File.createTempFile("temp_image", null, context.cacheDir)
+
+        context.contentResolver.openInputStream(uri)?.use { input ->
+            tempFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        return tempFile
+    }
+
+    var userID: String? = "0"
+
     fun registerbutton(
         name: String,
         email: String,
         pass: String,
         birthdate: String,
         gender: String,
-        image: Any?,
+        image: Uri?,
         bio: String,
         context: Context,
         dataStore: DataStoreManager,
         navController: NavController
     ) {
-//        val formatter = SimpleDateFormat("yyyy-MM-dd")
-//        val text = birthdate
-//        val date = formatter.parse(text)
-
-        val user = User(
-            name = name,
-            email = email,
-            password = pass,
-            birthdate = birthdate,
-            gender = gender,
-            achievement = 0,
-            description = bio,
-            image = image,
-//                registration_date = Date().toString()
-        )
         viewModelScope.launch {
-            val token = MyDBContainer().myDBRepositories.register(user)
+            // Cek apakah URI gambar tidak null
+            if (image != null) {
+                val imageFile = createTempFileFromUri(context, image)
 
-            if (token.equals("Validation error", ignoreCase = true) || token.equals(
-                    "Error",
-                    ignoreCase = true
+                // Dapatkan path yang dapat dibaca oleh aplikasi menggunakan FileProvider
+                val imageUri = FileProvider.getUriForFile(
+                    context,
+                    "com.example.lyrifyapp.provider",
+                    imageFile
                 )
-            ) {
-                Toast.makeText(context, token, Toast.LENGTH_LONG).show()
+
+                // Buat objek User dengan path file gambar
+                val user = User(
+                    name = name,
+                    email = email,
+                    password = pass,
+                    birthdate = birthdate,
+                    gender = gender,
+                    achievement = 0,
+                    description = bio,
+                    image = imageUri.toString() // Menggunakan path file gambar
+                )
+
+                // Panggil fungsi register pada repository
+                val token = MyDBContainer().myDBRepositories.register(user)
+
+                if (token.toString() == "0") {
+                    Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+                } else if (token.toString() != "0"){
+                    userID = token.toString()
+                    Toast.makeText(context, userID, Toast.LENGTH_LONG).show()
+//                    navController.navigate(Lyrify_Screen.LoginView.name) {
+//                        popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
+//                    }
+                }
             } else {
-                navController.navigate(Lyrify_Screen.LoginView.name)
-                {
-                    popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
+                // Buat objek User dengan path file gambar
+                val user = User(
+                    name = name,
+                    email = email,
+                    password = pass,
+                    birthdate = birthdate,
+                    gender = gender,
+                    achievement = 0,
+                    description = bio,
+                    image = ""
+                )
+
+                // Panggil fungsi register pada repository
+                val token = MyDBContainer().myDBRepositories.register(user)
+
+                if (token.toString() == "0") {
+                    Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+                } else if (token.toString() != "0"){
+                    userID = token.toString()
+                    navController.navigate(Lyrify_Screen.LoginView.name) {
+                        popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
+                    }
                 }
             }
         }
+    }
+
+    fun getUserId(): String? {
+        return userID
     }
 }
