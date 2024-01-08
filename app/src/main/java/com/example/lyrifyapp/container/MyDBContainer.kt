@@ -19,8 +19,8 @@ class AuthInterceptor(private val bearerToken: String) : Interceptor {
 class MyDBContainer {
     companion object{
         //bekerja seperti static
-        val BASE_IMG = ""
         var ACCESS_TOKEN = ""
+        var USER_ID = -1
     }
     //master URL
     //ipv4 address (BASE_URL diganti setiap kali pindah network/wifi)

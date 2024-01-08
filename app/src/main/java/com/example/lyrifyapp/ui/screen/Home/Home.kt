@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -51,20 +52,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.model.User
+import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.ChapColor
 import com.example.lyrifyapp.ui.theme.ChapDesc
 import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.montserrat
+import retrofit2.Response
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(user: User) {
+fun HomeView(
+    homeViewModel: HomeViewModel,
+    dataStore: DataStoreManager,
+    navController: NavController,
+) {
 
+    var currentUser: User? = null
+    val cek_status: HomeUIState = homeViewModel.homeUIState
+    when (cek_status) {
+        is HomeUIState.Success -> {
+            currentUser = homeViewModel.userNow
+        }
+
+        is HomeUIState.Error -> {
+            LoadingErrorView()
+        }
+
+        is HomeUIState.Loading -> {
+            LoadingErrorView()
+        }
+
+    }
     var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -90,33 +117,33 @@ fun HomeView(user: User) {
                             .padding(start = 20.dp, end = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.main_profile_photo),
-                            contentDescription = "profile_photo",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                                .clip(CircleShape)
-                        )
-//                        AsyncImage(
-//                            model = ImageRequest.Builder(LocalContext.current)
-//                                .data(movie.poster_path)
-//                                .crossfade(true)
-//                                .build(),
-//                            placeholder = painterResource(id = R.drawable.profilepicture),
-//                            contentDescription = "Profile Picture",
+//                        Image(
+//                            painter = painterResource(id = R.drawable.main_profile_photo),
+//                            contentDescription = "profile_photo",
+//                            contentScale = ContentScale.Crop,
 //                            modifier = Modifier
 //                                .width(70.dp)
 //                                .height(70.dp)
 //                                .clip(CircleShape)
 //                        )
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(currentUser?.image)
+                                .crossfade(true)
+                                .build(),
+                            placeholder = painterResource(id = R.drawable.profilepicture),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .width(70.dp)
+                                .height(70.dp)
+                                .clip(CircleShape)
+                        )
                         Spacer(Modifier.width(12.dp))
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Hi ${user.name}",
+                                text = "Hi ${currentUser?.name}",
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontFamily = montserrat,

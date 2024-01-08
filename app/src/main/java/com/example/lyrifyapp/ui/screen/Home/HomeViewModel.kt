@@ -6,8 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lyrifyapp.container.MyDBContainer
+import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.User
+import com.example.lyrifyapp.model.UserAPIResponse
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 sealed interface HomeUIState {
     data class Success(val data: User) : HomeUIState
@@ -18,14 +21,20 @@ sealed interface HomeUIState {
 }
 
 class HomeViewModel : ViewModel() {
-    private lateinit var data: User
     var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
         private set
 
-    fun getUser(id : Int) {
+    lateinit var userNow: User
+
+    init {
+        getUser()
+    }
+    fun getUser() {
         viewModelScope.launch {
-            val result = MyDBContainer().myDBRepositories.getUser(id)
-            homeUIState = HomeUIState.Success(data)
+            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+
+            userNow = ResponseGetUser.data
+            homeUIState = HomeUIState.Success(userNow)
         }
     }
 

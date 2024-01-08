@@ -30,7 +30,6 @@ class RegisterViewModel : ViewModel() {
         return tempFile
     }
 
-    var userID: String? = "0"
 
     fun registerbutton(
         name: String,
@@ -74,11 +73,9 @@ class RegisterViewModel : ViewModel() {
                 if (token.toString() == "0") {
                     Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
                 } else if (token.toString() != "0"){
-                    userID = token.toString()
-                    Toast.makeText(context, userID, Toast.LENGTH_LONG).show()
-//                    navController.navigate(Lyrify_Screen.LoginView.name) {
-//                        popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
-//                    }
+                    navController.navigate(Lyrify_Screen.LoginView.name) {
+                        popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
+                    }
                 }
             } else {
                 // Buat objek User dengan path file gambar
@@ -99,16 +96,11 @@ class RegisterViewModel : ViewModel() {
                 if (token.toString() == "0") {
                     Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
                 } else if (token.toString() != "0"){
-                    userID = token.toString()
                     navController.navigate(Lyrify_Screen.LoginView.name) {
                         popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
                     }
                 }
             }
         }
-    }
-
-    fun getUserId(): String? {
-        return userID
     }
 }

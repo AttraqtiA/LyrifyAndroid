@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -60,6 +62,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -94,6 +97,7 @@ fun RegisterView(
     var bio by rememberSaveable { mutableStateOf("") }
     var birthdate by rememberSaveable { mutableStateOf("") }
     var gender by rememberSaveable { mutableStateOf("") }
+    var passwordVisibility by remember { mutableStateOf(false) }
 
     var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
 
@@ -219,14 +223,7 @@ fun RegisterView(
                         keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                     ),
                 )
-//                CustomTextField(
-//                    value = pass,
-//                    onValueChanged = { pass = it },
-//                    text = "Password",
-//                    keyboardOptions = KeyboardOptions.Default.copy(
-//                        keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
-//                    ),
-//                )
+
 
                 OutlinedTextField(
                     value = pass,
@@ -262,7 +259,16 @@ fun RegisterView(
                         unfocusedBorderColor = Orange,
                         textColor = Color.White
                     ),
-                    visualTransformation = PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                            Icon(
+                                imageVector = if (passwordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = "Toggle password visibility",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 )
 
                 CustomTextField(

@@ -2,6 +2,7 @@ package com.example.lyrifyapp.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -15,11 +16,13 @@ class DataStoreManager(context: Context) {
 
     companion object {
         val TOKEN_KEY = stringPreferencesKey("token_key")
+        val USER_ID = intPreferencesKey("user_id")
     }
     //function untuk tambah token
-    suspend fun saveToken(token: String) {
+    suspend fun saveToken(token: String, user_id: Int) {
         dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
+//            preferences[USER_ID] = user_id
         }
     }
 
@@ -27,4 +30,7 @@ class DataStoreManager(context: Context) {
         preferences[TOKEN_KEY]
     }
 
+    val getUser_id: Flow<Int?> = dataStore.data.map { preferences ->
+        preferences[USER_ID]
+    }
 }

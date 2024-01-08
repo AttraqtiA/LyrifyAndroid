@@ -7,11 +7,13 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.lyrifyapp.container.MyDBContainer
 import com.example.lyrifyapp.data.DataStoreManager
+import com.example.lyrifyapp.model.LoginAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.ui.Lyrify_Screen
 import com.example.lyrifyapp.ui.screen.Home.HomeUIState
@@ -41,25 +43,35 @@ class LoginViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             //return token
-            val token = MyDBContainer().myDBRepositories.login(email, password)
+            val result : LoginAPIResponse = MyDBContainer().myDBRepositories.login(email, password)
 
             //untuk error handling
-            if (token.equals("Incorrect Password", true)) {
-                Toast.makeText(context, token, Toast.LENGTH_LONG).show()
-            } else if (token.equals("User Not Found", true)) {
-                Toast.makeText(context, token, Toast.LENGTH_LONG).show()
+            if (result.equals("Incorrect Password")) {
+                Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show()
+            } else if (result.equals("User Not Found")) {
+                Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show()
             } else {
-                navController.navigate(Lyrify_Screen.Home.name + "/user/" + registerViewModel.getUserId())
-                {
+                Toast.makeText(context, result.user_id.toString(), Toast.LENGTH_LONG).show()
+
+                MyDBContainer.ACCESS_TOKEN = result.token
+                MyDBContainer.USER_ID = result.user_id
+
+                navController.navigate(Lyrify_Screen.Home.name) {
                     popUpTo(Lyrify_Screen.LoginView.name) { inclusive = true }
                 }
-                dataStore.saveToken(token)
 
-                dataStore.getToken.collect { token ->
-                    if (token != null) {
-                        MyDBContainer.ACCESS_TOKEN = token
+                dataStore.saveToken(result.token, result.user_id)
+                dataStore.getUser_id.collect {userid1->
+                    if (userid1 != null) {
+                        MyDBContainer.USER_ID = userid1.toInt()
                     }
                 }
+                dataStore.getToken.collect {token1->
+                    MyDBContainer.ACCESS_TOKEN = token1.toString()
+
+                }
+
+
             }
         }
     }
