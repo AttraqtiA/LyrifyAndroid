@@ -29,10 +29,6 @@ sealed interface LoginUIState {
 }
 
 class LoginViewModel: ViewModel() {
-    var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Loading)
-        private set
-
-    val registerViewModel = RegisterViewModel()
 
     fun loginbutton(
         email: String,
@@ -46,13 +42,9 @@ class LoginViewModel: ViewModel() {
             val result : LoginAPIResponse = MyDBContainer().myDBRepositories.login(email, password)
 
             //untuk error handling
-            if (result.equals("Incorrect Password")) {
-                Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show()
-            } else if (result.equals("User Not Found")) {
+            if (result.message == "Incorrect Password" || result.message == "User Not Found") {
                 Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, result.user_id.toString(), Toast.LENGTH_LONG).show()
-
                 MyDBContainer.ACCESS_TOKEN = result.token
                 MyDBContainer.USER_ID = result.user_id
 
@@ -67,11 +59,10 @@ class LoginViewModel: ViewModel() {
                     }
                 }
                 dataStore.getToken.collect {token1->
-                    MyDBContainer.ACCESS_TOKEN = token1.toString()
-
+                    if (token1 != null) {
+                        MyDBContainer.ACCESS_TOKEN = token1.toString()
+                    }
                 }
-
-
             }
         }
     }

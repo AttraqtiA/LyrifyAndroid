@@ -1,5 +1,6 @@
 package com.example.lyrifyapp.ui
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -55,6 +56,7 @@ import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
 import com.example.lyrifyapp.ui.screen.Profile.ProfileView
+import com.example.lyrifyapp.ui.screen.Profile.ProfileViewModel
 import com.example.lyrifyapp.ui.screen.Register.RegisterView
 import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
 import com.example.lyrifyapp.ui.theme.Orange
@@ -265,13 +267,18 @@ fun LyrifyRoute() {
                     dataStore = dataStore,
                     navController = navController,
                 )
-
-
             }
 
             composable(Lyrify_Screen.Profile.name) {
+
                 canNavigateBack = true
-                ProfileView()
+                val profileViewModel: ProfileViewModel = viewModel()
+
+                ProfileView(
+                    profileViewModel = profileViewModel,
+                    dataStore = dataStore,
+                    navController = navController,
+                )
             }
 
             composable(Lyrify_Screen.ChapterList.name) {

@@ -3,6 +3,7 @@ package com.example.lyrifyapp.ui.screen.Profile
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,12 +60,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.lyrifyapp.data.DataStoreManager
+import com.example.lyrifyapp.model.User
+import com.example.lyrifyapp.ui.screen.Home.HomeUIState
+import com.example.lyrifyapp.ui.screen.Home.HomeViewModel
+import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.grayCustom
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileView() {
+fun ProfileView(
+    profileViewModel: ProfileViewModel,
+    dataStore: DataStoreManager,
+    navController: NavController,
+) {
+    var currentUser: User? = null
+
+    val cek_status: ProfileUIState = profileViewModel.profileUIState
+    when (cek_status) {
+        is ProfileUIState.Success -> {
+            currentUser = profileViewModel.userNow
+        }
+
+        is ProfileUIState.Error -> {
+            LoadingErrorView()
+        }
+
+        is ProfileUIState.Loading -> {
+            LoadingErrorView()
+        }
+    }
 
     var bioInput by rememberSaveable { mutableStateOf("") }
 
@@ -213,7 +240,7 @@ fun ProfileView() {
                             }
                         }
                         Text(
-                            text = "Louis Fernando",
+                            text = "${currentUser?.name}",
                             style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = montserrat,
@@ -267,7 +294,7 @@ fun ProfileView() {
                                 .fillMaxWidth()
                         )
                         TextField(
-                            value = "\"Passionate about languages and music, crafting a harmonious blend to enhance vocabularies and refine English listening skills.\"",
+                            value = "${currentUser?.description}",
                             onValueChange = { bioInput = it },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -582,10 +609,10 @@ fun ProfileView() {
     )
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ProfilePreview() {
-    LyrifyAppTheme {
-        ProfileView()
-    }
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun ProfilePreview() {
+//    LyrifyAppTheme {
+//        ProfileView()
+//    }
+//}

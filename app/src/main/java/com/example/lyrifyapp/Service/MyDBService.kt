@@ -4,8 +4,11 @@ import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.History
 import com.example.lyrifyapp.model.Level
+import com.example.lyrifyapp.model.LoginAPIResponse
 import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.User
+import com.example.lyrifyapp.model.UserAPIResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -21,7 +24,7 @@ interface MyDBService {
 
     //LOGIN
     @POST("login")
-    suspend fun login(@Body user: User): APIResponse
+    suspend fun login(@Body user: User): LoginAPIResponse
 
     //LOGOUT
     @DELETE("logout")
@@ -31,7 +34,7 @@ interface MyDBService {
     suspend fun user(): User
 
     @GET("user/{id}")
-    suspend fun getUser(@Path("user/{id}") id: Int): User
+    suspend fun getUser(@Path("id") id: Int): UserAPIResponse
 
     @PATCH("update_user/{id}")
     suspend fun update(): APIResponse

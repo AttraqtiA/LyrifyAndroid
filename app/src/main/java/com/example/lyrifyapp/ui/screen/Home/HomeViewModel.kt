@@ -9,6 +9,7 @@ import com.example.lyrifyapp.container.MyDBContainer
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
+import com.example.lyrifyapp.ui.screen.Profile.ProfileUIState
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -27,14 +28,21 @@ class HomeViewModel : ViewModel() {
     lateinit var userNow: User
 
     init {
-        getUser()
+        startUIState()
     }
-    fun getUser() {
+    private fun startUIState() {
         viewModelScope.launch {
-            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(
+                MyDBContainer.USER_ID)
 
             userNow = ResponseGetUser.data
             homeUIState = HomeUIState.Success(userNow)
+        }
+    }
+
+    private fun getCurrentUser() {
+        viewModelScope.launch {
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID).data
         }
     }
 
