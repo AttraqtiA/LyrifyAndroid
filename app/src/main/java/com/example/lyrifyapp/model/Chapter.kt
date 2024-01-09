@@ -6,6 +6,5 @@ data class Chapter(
 //    val id: Int,
     val title: String,
     val description: String,
-    val status: Boolean,
-    @DrawableRes val image: Int
+    val image: String
 )

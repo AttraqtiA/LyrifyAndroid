@@ -19,7 +19,12 @@ class GameplayViewModel : ViewModel() {
                 "Fix You",
                 "Pop",
                 "When you try your ....., but you dont succeed",
-                mutableListOf("best", "day", "west", "way", "self", "well"),
+                "best",
+                "west",
+                "west",
+                "a",
+                "b",
+                "c",
                 1,
                 "AQl5nFnZPwk",
                 "Coldplay",
@@ -27,7 +32,8 @@ class GameplayViewModel : ViewModel() {
                 30,
                 false,
                 0,
-                "fixyou.jpg"
+                "fixyou.jpg",
+                "hard"
             ),
             History(
                 User(
@@ -45,7 +51,12 @@ class GameplayViewModel : ViewModel() {
                     "Fix You",
                     "Pop",
                     "When you try your ....., but you dont succeed",
-                    mutableListOf("best", "day", "west", "way", "self", "well"),
+                    "best",
+                    "west",
+                    "west",
+                    "a",
+                    "b",
+                    "c",
                     1,
                     "AQl5nFnZPwk",
                     "Coldplay",
@@ -53,7 +64,8 @@ class GameplayViewModel : ViewModel() {
                     30,
                     false,
                     0,
-                    "fixyou.jpg"
+                    "fixyou.jpg",
+                    "ez"
                 ),
                 0,
                 SimpleDateFormat("yyyy-MM-dd").parse("2023-09-22")!!

@@ -61,8 +61,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.ui.screen.Home.HomeUIState
@@ -83,7 +81,7 @@ fun ProfileView(
     val cek_status: ProfileUIState = profileViewModel.profileUIState
     when (cek_status) {
         is ProfileUIState.Success -> {
-            currentUser = profileViewModel.userNow
+//            currentUser = profileViewModel.userNow
         }
 
         is ProfileUIState.Error -> {
@@ -211,16 +209,16 @@ fun ProfileView(
                             modifier = Modifier.padding(bottom = 80.dp),
                             contentAlignment = Alignment.BottomEnd
                         ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(currentUser?.image)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.profilepicture),
-                                contentDescription = "Profile Picture",
+                            Image(
+                                painter = painterResource(id = R.drawable.main_profile_photo),
+                                contentDescription = "Profile Photo",
                                 modifier = Modifier
                                     .size(90.dp)
                                     .clip(CircleShape)
+                                    .clickable {
+                                        //
+                                    },
+                                contentScale = ContentScale.Crop
                             )
                             Box(
                                 modifier = Modifier

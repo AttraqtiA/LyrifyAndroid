@@ -1,5 +1,7 @@
 package com.example.lyrifyapp.model
 
+import kotlinx.serialization.Serializable
+
 class APIResponse (
     val status:String = "",
     val message:String = "",
@@ -24,8 +26,25 @@ class MusicAPIResponse (
     val data: Music
 )
 
-class AllMusicAPIResponse (
+class ChapterAPIResponse (
     val status:String = "",
     val message:String = "",
-    val data: List<Music>
+    val data: Chapter
+)
+
+class LevelAPIResponse (
+    val status:String = "",
+    val message:String = "",
+    val data: Level
+)
+
+class HistoryAPIResponse (
+    val status:String = "",
+    val message:String = "",
+    val data: History
+)
+class APIListResponse<T> (
+    val status:String = "",
+    val message:String = "",
+    val data: T
 )

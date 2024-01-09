@@ -477,12 +477,12 @@ fun GameplayView(
                         contentPadding = PaddingValues(horizontal = 32.dp, vertical = 36.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        itemsIndexed(variabel_UIState.music.options) {index, it->
+                        item {
                             Row(
                                 modifier = Modifier
                                     .clickable(
                                         onClick = {
-                                            indexDefault = index
+                                            indexDefault = 1
                                             isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
                                             isDone = true
                                             dialogshow = true
@@ -495,7 +495,7 @@ fun GameplayView(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = it,
+                                    text = variabel_UIState.music.option1,
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontFamily = montserrat,

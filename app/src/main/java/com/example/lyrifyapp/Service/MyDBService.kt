@@ -1,17 +1,21 @@
 package com.example.lyrifyapp.Service
 
+import com.example.lyrifyapp.model.APIListResponse
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.History
 import com.example.lyrifyapp.model.Level
+import com.example.lyrifyapp.model.LevelAPIResponse
 import com.example.lyrifyapp.model.LoginAPIResponse
 import com.example.lyrifyapp.model.Music
+import com.example.lyrifyapp.model.MusicAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -30,53 +34,69 @@ interface MyDBService {
     @DELETE("logout")
     suspend fun logout(): APIResponse
 
+    //USER
     @GET("all_user")
-    suspend fun user(): User
+    suspend fun user(): Response<APIListResponse<UserAPIResponse>>
 
     @GET("user/{id}")
-    suspend fun getUser(@Path("id") id: Int): UserAPIResponse
+    suspend fun getUser(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<UserAPIResponse>
 
     @PATCH("update_user/{id}")
-    suspend fun update(): APIResponse
+    suspend fun update(@Body user: User): APIResponse
 
     @DELETE("delete_user/{id}")
     suspend fun delete(): APIResponse
 
-//    @GET("user_music")
-//    suspend fun usermusic(): UserMusic
-//
-//    @POST("create_user_music")
-//    suspend fun createusermusic(@Body usermusic:UserMusic): APIResponse
-//
-//    @PATCH("update_user_music/{id}")
-//    suspend fun updateusermusic():APIResponse
-//
-//    @DELETE("delete_user_music/{id}")
-//    suspend fun deleteusermusic():APIResponse
+    // MUSIC
+    @GET("/musics")
+    suspend fun getAllMusics(
+        @Header("Authorization") token: String
+    ): Response<APIListResponse<List<Music>>>
 
-    //history
-    @GET("histories")
+    @GET("/musics/{id}")
+    suspend fun getMusic(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<MusicAPIResponse>
+
+    // CHAPTERS
+    @GET("chapters")
+    suspend fun getAllChapters(
+        @Header("Authorization") token: String
+    ): Response<APIListResponse<List<Chapter>>>
+
+    @GET("chapter/{id}")
+    suspend fun getChapter(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<Chapter>
+
+    // HISTORY
+    @GET("/histories")
     suspend fun histories(): History
 
-    @POST("create_history")
+    @POST("/create_history")
     suspend fun register(@Body history: History): APIResponse
 
-    @PATCH("update_history/{id}")
+    @PATCH("/update_history/{id}")
     suspend fun updatehistory(): APIResponse
 
-    @DELETE("delete_history/{id}")
+    @DELETE("/delete_history/{id}")
     suspend fun deletehistory(): APIResponse
 
-//chapter
+    // LEVELS
+    @GET("/levels")
+    suspend fun levels(
+        @Header("Authorization") token: String
+    ): Level
 
-    @GET("chapters")
-    suspend fun chapters(): Chapter
-    //level
+    @GET("/levels/{id}")
+    suspend fun getLevel(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<LevelAPIResponse>
 
-    @GET("levels")
-    suspend fun levels(): Level
-
-    //music
-    @GET("musics")
-    suspend fun musics(): Music
 }

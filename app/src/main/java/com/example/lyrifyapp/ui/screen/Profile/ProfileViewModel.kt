@@ -13,9 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 sealed interface ProfileUIState {
-    data class Success(val data: User) : ProfileUIState
+    data class Success(val data: Response<UserAPIResponse>) : ProfileUIState
 
     object Error : ProfileUIState
 
@@ -26,24 +27,22 @@ class ProfileViewModel : ViewModel() {
     var profileUIState: ProfileUIState by mutableStateOf(ProfileUIState.Loading)
         private set
 
-    lateinit var userNow: User
+    lateinit var userNow: Response<UserAPIResponse>
 
     init {
         startUIState()
     }
     private fun startUIState() {
         viewModelScope.launch {
-            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(
-                MyDBContainer.USER_ID)
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
 
-            userNow = ResponseGetUser.data
             profileUIState = ProfileUIState.Success(userNow)
         }
     }
 
     private fun getCurrentUser() {
         viewModelScope.launch {
-            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID).data
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
         }
     }
 }

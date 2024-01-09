@@ -2,6 +2,7 @@ package com.example.lyrifyapp.ui.screen.Home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -54,12 +56,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.request.ImageRequest
 import com.example.lyrifyapp.R
-import com.example.lyrifyapp.data.DataStoreManager
+import com.example.lyrifyapp.container.MyDBContainer
+import com.example.lyrifyapp.model.APIListResponse
+import com.example.lyrifyapp.model.APIResponse
+import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.User
+import com.example.lyrifyapp.model.UserAPIResponse
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.ChapColor
@@ -75,18 +80,22 @@ import kotlin.random.Random
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel,
-    dataStore: DataStoreManager,
     navController: NavController,
 ) {
-
-    var currentUser: User? = null
     val cek_status: HomeUIState = homeViewModel.homeUIState
-    var musicList: List<Music> = mutableListOf()
 
+    var userId: Int? = null
+    var userNow: Response<UserAPIResponse>? = null
+    var musicList: Response<APIListResponse<List<Music>>>? = null
+    var chapterList: Response<APIListResponse<List<Chapter>>>? = null
+
+    val context = LocalContext.current
     when (cek_status) {
         is HomeUIState.Success -> {
-            currentUser = homeViewModel.userNow
-            musicList = homeViewModel.MusicList
+            userId = cek_status.user
+            userNow = cek_status.userNow
+            musicList = cek_status.musicList
+            chapterList = cek_status.chapterList
         }
 
         is HomeUIState.Error -> {
@@ -98,6 +107,10 @@ fun HomeView(
         }
 
     }
+
+    val musics: APIListResponse<List<Music>>? = musicList?.body()
+    val chapters: APIListResponse<List<Chapter>>? = chapterList?.body()
+
     var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -134,7 +147,7 @@ fun HomeView(
 //                        )
                         AsyncImage(
                             model = ImageRequest.Builder(context = LocalContext.current)
-                                .data("https://lyrify.online/" + currentUser?.name)
+                                .data("https://lyrify.online/resources/local_assets/${userNow?.body()?.data?.image}")
                                 .crossfade(true)
                                 .build(),
 //                            placeholder = painterResource(id = R.drawable.profilepicture),
@@ -149,7 +162,7 @@ fun HomeView(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Hi ${currentUser?.name}",
+                                text = "Hi ${userNow?.body()?.data?.image}",
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontFamily = montserrat,
@@ -200,12 +213,20 @@ fun HomeView(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         val random =  Random(System.currentTimeMillis()) // Seed with current time
-                        val randomFiveMusic = musicList.shuffled(random).distinctBy { it.title }.take(5)
+//                        val randomFiveMusic = musicList.shuffled(random)?.distinctBy { it.title }.take(5)
 
-                        items(randomFiveMusic) { music ->
-                            SongCard(music)
+
+                        musics?.data?.size?.let { it1 ->
+                            items(it1) {index ->
+                                SongCard(
+                                    image = musics.data[index].image,
+                                    title = musics.data[index].title,
+                                    artist = musics.data[index].artist,
+                                    year_released = musics.data[index].artist,
+                                    navController = navController
+                                )
+                            }
                         }
-
 
                     }
                 }
@@ -243,14 +264,18 @@ fun HomeView(
                     }
                     Spacer(Modifier.height(10.dp))
                 }
-                item {
-                    ChapterCard()
-                }
-                item {
-                    ChapterCard()
-                }
-                item {
-                    ChapterCard()
+
+                Toast.makeText(context, musics.toString(), Toast.LENGTH_LONG).show()
+
+                chapters?.data?.size?.let { it1 ->
+                    items(it1) {index ->
+                        ChapterCard(
+                            count = index,
+                            image = chapters.data[index].image,
+                            title = chapters.data[index].title,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
@@ -259,7 +284,11 @@ fun HomeView(
 
 @Composable
 fun SongCard(
-
+    image: String,
+    title: String,
+    artist: String,
+    year_released: String,
+    navController: NavController
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -281,7 +310,7 @@ fun SongCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 AsyncImage(
-                    model = "https://lyrify.online/resources/local_assets/${music.image}",
+                    model = "https://lyrify.online/resources/local_assets/${image}",
                     contentDescription = "Music Cover Album",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -297,7 +326,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = music.title,
+                        text = title,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = montserrat,
@@ -316,7 +345,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = music.artist,
+                        text = artist,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = montserrat,
@@ -335,7 +364,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = music.year_released,
+                        text = year_released,
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontFamily = montserrat,
@@ -364,7 +393,10 @@ fun SongCard(
 
 @Composable
 fun ChapterCard(
-
+    count: Int,
+    image: String,
+    title: String,
+    navController: NavController
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -394,7 +426,7 @@ fun ChapterCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Chapter 1",
+                        text = "Chapter $count",
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontFamily = montserrat,
@@ -412,7 +444,7 @@ fun ChapterCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "“Exploring the Tapestry of Music”",
+                        text = title,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = montserrat,
@@ -510,9 +542,9 @@ fun ChapterCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.chapter_1),
-                    contentDescription = "Chapter_1",
+                AsyncImage(
+                    model = "https://lyrify.online/resources/local_assets/${image}",
+                    contentDescription = "Chapter Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(130.dp)

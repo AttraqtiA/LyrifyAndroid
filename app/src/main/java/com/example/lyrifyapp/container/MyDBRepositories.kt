@@ -1,17 +1,23 @@
 package com.example.lyrifyapp.container
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import com.example.lyrifyapp.Service.MyDBService
+import com.example.lyrifyapp.model.APIListResponse
 import com.example.lyrifyapp.model.APIResponse
-import com.example.lyrifyapp.model.AllMusicAPIResponse
+import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.LoginAPIResponse
+import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.MusicAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
+import com.google.gson.internal.LinkedTreeMap
 import retrofit2.Response
 import java.net.HttpURLConnection
 
 class MyDBRepositories(private val myDBService: MyDBService) {
-        suspend fun login(email: String, password: String): LoginAPIResponse {
+    suspend fun login(email: String, password: String): LoginAPIResponse {
         val user = User(
             name = "",
             email = email,
@@ -27,7 +33,7 @@ class MyDBRepositories(private val myDBService: MyDBService) {
         if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
             return result
         }
-            return result
+        return result
     }
 
     suspend fun logout(): String {
@@ -36,25 +42,27 @@ class MyDBRepositories(private val myDBService: MyDBService) {
         return result.message
     }
 
-    suspend fun register(user: User): Any? {
+    suspend fun register(user: User): Any {
         val result = myDBService.register(user)
 
-        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
-            return result.data
-        } else {
-            return result.data
-        }
+        return result.data
     }
 
-    suspend fun getUser(id: Int): UserAPIResponse {
-        return myDBService.getUser(id)
+    suspend fun getUser(id: Int): Response<UserAPIResponse> {
+        return myDBService.getUser(MyDBContainer.ACCESS_TOKEN, id)
     }
 
-    suspend fun getAll_Music(): AllMusicAPIResponse {
-        return myDBService.musics()
+    // MUSIC
+    suspend fun getAllMusic(token: String): Response<APIListResponse<List<Music>>> {
+        return myDBService.getAllMusics(token)
     }
 
-    suspend fun getMusic(id: Int): MusicAPIResponse {
-        return myDBService.getMUsic(id)
+    suspend fun getMusic(id: Int): Response<MusicAPIResponse> {
+        return myDBService.getMusic(MyDBContainer.ACCESS_TOKEN, id)
+    }
+
+    // CHAPTER
+    suspend fun getAllChapters(token: String): Response<APIListResponse<List<Chapter>>> {
+        return myDBService.getAllChapters(token)
     }
 }

@@ -11,14 +11,19 @@ data class Music (
     val title: String,
     val genre: String,
     val lyrics: String,
-    val options: MutableList<String>,
+    val option1: String,
+    val option2: String,
+    val option3: String,
+    val option4: String,
+    val option5: String,
+    val option6: String,
     val answer_key: Int,
-//    @RawRes val audio: Int,
     val youtube_link: String,
     val artist: String,
     val year_released: String,
     val guess_duration: Int,
     val status: Boolean,
     val point: Int,
-    val image: String
+    val image: String,
+    val difficulty: String
 )

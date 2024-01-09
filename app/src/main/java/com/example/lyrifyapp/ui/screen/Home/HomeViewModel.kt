@@ -1,23 +1,26 @@
 package com.example.lyrifyapp.ui.screen.Home
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lyrifyapp.container.MyDBContainer
-import com.example.lyrifyapp.model.APIResponse
-import com.example.lyrifyapp.model.AllMusicAPIResponse
+import com.example.lyrifyapp.model.APIListResponse
+import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.Music
-import com.example.lyrifyapp.model.MusicAPIResponse
-import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
-import com.example.lyrifyapp.ui.screen.Profile.ProfileUIState
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
 sealed interface HomeUIState {
-    data class Success(val data1: User, val data2: List<Music>) : HomeUIState
+    data class Success(
+        val user: Int,
+        val userNow: Response<UserAPIResponse>,
+        val musicList: Response<APIListResponse<List<Music>>>,
+        val chapterList: Response<APIListResponse<List<Chapter>>>
+    ) : HomeUIState
 
     object Error : HomeUIState
 
@@ -28,8 +31,9 @@ class HomeViewModel : ViewModel() {
     var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
         private set
 
-    lateinit var userNow: User
-    lateinit var MusicList: List<Music>
+    lateinit var userNow: Response<UserAPIResponse>
+    lateinit var musicList: Response<APIListResponse<List<Music>>>
+    lateinit var chapterList: Response<APIListResponse<List<Chapter>>>
 
     init {
         startUIState()
@@ -37,19 +41,27 @@ class HomeViewModel : ViewModel() {
 
     private fun startUIState() {
         viewModelScope.launch {
-            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
-            val ResponseGetMusic: AllMusicAPIResponse = MyDBContainer().myDBRepositories.getAll_Music()
 
-            userNow = ResponseGetUser.data
-            MusicList = ResponseGetMusic.data
-            homeUIState = HomeUIState.Success(userNow, MusicList)
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+            Log.d("user_check", userNow.body().toString())
+            musicList = MyDBContainer().myDBRepositories.getAllMusic(MyDBContainer.ACCESS_TOKEN)
+            Log.d("music_check", musicList.body()?.data.toString())
+            chapterList = MyDBContainer().myDBRepositories.getAllChapters(MyDBContainer.ACCESS_TOKEN)
+            Log.d("music_check", musicList.body()?.data.toString())
+
+            homeUIState =
+                HomeUIState.Success(MyDBContainer.USER_ID, userNow, musicList, chapterList)
         }
     }
 
-    private fun getCurrentUser() {
+    private fun toGameplay() {
         viewModelScope.launch {
-            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID).data
+
         }
+    }
+
+    private fun toChapterDetail() {
+
     }
 
 //    loginViewModel = LoginViewModel()
