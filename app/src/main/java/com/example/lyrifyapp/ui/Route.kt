@@ -1,5 +1,6 @@
 package com.example.lyrifyapp.ui
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -59,9 +60,12 @@ import com.example.lyrifyapp.ui.screen.Profile.ProfileView
 import com.example.lyrifyapp.ui.screen.Profile.ProfileViewModel
 import com.example.lyrifyapp.ui.screen.Register.RegisterView
 import com.example.lyrifyapp.ui.screen.Register.RegisterViewModel
+import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 enum class Lyrify_Screen() {
     Intro1,
@@ -151,10 +155,10 @@ fun BottomNavBarLyrify(navController: NavController) {
 
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LyrifyRoute() {
-
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val navController = rememberNavController()
@@ -163,7 +167,7 @@ fun LyrifyRoute() {
     val context = LocalContext.current
     val dataStore = DataStoreManager(context)
 
-    LaunchedEffect(Unit) {
+    GlobalScope.launch{
         dataStore.getToken.collect { token ->
             if (token != null) {
                 MyDBContainer.ACCESS_TOKEN = token

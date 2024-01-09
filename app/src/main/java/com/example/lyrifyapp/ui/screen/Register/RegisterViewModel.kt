@@ -2,6 +2,7 @@ package com.example.lyrifyapp.ui.screen.Register
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -20,7 +21,8 @@ import java.io.InputStream
 class RegisterViewModel : ViewModel() {
 
     private suspend fun createTempFileFromUri(context: Context, uri: Uri): File {
-        val tempFile = File.createTempFile("temp_image", null, context.cacheDir)
+        val tempDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val tempFile = File.createTempFile("temp_image", null, tempDir)
 
         context.contentResolver.openInputStream(uri)?.use { input ->
             tempFile.outputStream().use { output ->
@@ -29,7 +31,6 @@ class RegisterViewModel : ViewModel() {
         }
         return tempFile
     }
-
 
     fun registerbutton(
         name: String,
@@ -49,11 +50,7 @@ class RegisterViewModel : ViewModel() {
                 val imageFile = createTempFileFromUri(context, image)
 
                 // Dapatkan path yang dapat dibaca oleh aplikasi menggunakan FileProvider
-                val imageUri = FileProvider.getUriForFile(
-                    context,
-                    "com.example.lyrifyapp.provider",
-                    imageFile
-                )
+                val imageUri = Uri.fromFile(imageFile)
 
                 // Buat objek User dengan path file gambar
                 val user = User(
@@ -72,7 +69,7 @@ class RegisterViewModel : ViewModel() {
 
                 if (token.toString() == "0") {
                     Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
-                } else if (token.toString() != "0"){
+                } else if (token.toString() != "0") {
                     navController.navigate(Lyrify_Screen.LoginView.name) {
                         popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
                     }
@@ -95,7 +92,7 @@ class RegisterViewModel : ViewModel() {
 
                 if (token.toString() == "0") {
                     Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
-                } else if (token.toString() != "0"){
+                } else if (token.toString() != "0") {
                     navController.navigate(Lyrify_Screen.LoginView.name) {
                         popUpTo(Lyrify_Screen.RegisterView.name) { inclusive = true }
                     }

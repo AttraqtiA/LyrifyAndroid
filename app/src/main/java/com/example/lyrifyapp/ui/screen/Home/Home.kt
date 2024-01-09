@@ -127,11 +127,11 @@ fun HomeView(
 //                                .clip(CircleShape)
 //                        )
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(currentUser?.image)
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data("https://lyrify.online/" + currentUser?.name)
                                 .crossfade(true)
                                 .build(),
-                            placeholder = painterResource(id = R.drawable.profilepicture),
+//                            placeholder = painterResource(id = R.drawable.profilepicture),
                             contentDescription = "Profile Picture",
                             modifier = Modifier
                                 .width(70.dp)
