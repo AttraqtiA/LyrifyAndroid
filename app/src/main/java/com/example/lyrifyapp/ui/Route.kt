@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Back
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -115,7 +116,7 @@ fun BottomNavBarLyrify(navController: NavController) {
         // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme YAOLO KETEMU
         containerColor = Purple2,
         modifier = Modifier
-            .background(color = Color.Transparent)
+            .background(color = Background)
             .height(64.dp)
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
     ) {
@@ -268,7 +269,6 @@ fun LyrifyRoute() {
 
                 HomeView(
                     homeViewModel = homeViewModel,
-                    dataStore = dataStore,
                     navController = navController,
                 )
             }

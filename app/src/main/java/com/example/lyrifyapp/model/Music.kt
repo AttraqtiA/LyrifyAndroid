@@ -20,5 +20,5 @@ data class Music (
     val guess_duration: Int,
     val status: Boolean,
     val point: Int,
-    @DrawableRes val image: Int
+    val image: String
 )

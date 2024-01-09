@@ -2,7 +2,9 @@ package com.example.lyrifyapp.container
 
 import com.example.lyrifyapp.Service.MyDBService
 import com.example.lyrifyapp.model.APIResponse
+import com.example.lyrifyapp.model.AllMusicAPIResponse
 import com.example.lyrifyapp.model.LoginAPIResponse
+import com.example.lyrifyapp.model.MusicAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
 import retrofit2.Response
@@ -46,5 +48,13 @@ class MyDBRepositories(private val myDBService: MyDBService) {
 
     suspend fun getUser(id: Int): UserAPIResponse {
         return myDBService.getUser(id)
+    }
+
+    suspend fun getAll_Music(): AllMusicAPIResponse {
+        return myDBService.musics()
+    }
+
+    suspend fun getMusic(id: Int): MusicAPIResponse {
+        return myDBService.getMUsic(id)
     }
 }

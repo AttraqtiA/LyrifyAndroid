@@ -27,7 +27,7 @@ class GameplayViewModel : ViewModel() {
                 30,
                 false,
                 0,
-                R.drawable.fix_you
+                "fixyou.jpg"
             ),
             History(
                 User(
@@ -53,7 +53,7 @@ class GameplayViewModel : ViewModel() {
                     30,
                     false,
                     0,
-                    R.drawable.fix_you
+                    "fixyou.jpg"
                 ),
                 0,
                 SimpleDateFormat("yyyy-MM-dd").parse("2023-09-22")!!

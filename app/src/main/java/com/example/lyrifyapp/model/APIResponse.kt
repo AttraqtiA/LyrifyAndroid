@@ -17,3 +17,15 @@ class UserAPIResponse (
     val message:String = "",
     val data: User,
 )
+
+class MusicAPIResponse (
+    val status:String = "",
+    val message:String = "",
+    val data: Music
+)
+
+class AllMusicAPIResponse (
+    val status:String = "",
+    val message:String = "",
+    val data: List<Music>
+)

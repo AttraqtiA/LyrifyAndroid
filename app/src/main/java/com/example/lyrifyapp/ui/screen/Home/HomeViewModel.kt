@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lyrifyapp.container.MyDBContainer
 import com.example.lyrifyapp.model.APIResponse
+import com.example.lyrifyapp.model.AllMusicAPIResponse
+import com.example.lyrifyapp.model.Music
+import com.example.lyrifyapp.model.MusicAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
 import com.example.lyrifyapp.ui.screen.Profile.ProfileUIState
@@ -14,7 +17,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 sealed interface HomeUIState {
-    data class Success(val data: User) : HomeUIState
+    data class Success(val data1: User, val data2: List<Music>) : HomeUIState
 
     object Error : HomeUIState
 
@@ -26,17 +29,20 @@ class HomeViewModel : ViewModel() {
         private set
 
     lateinit var userNow: User
+    lateinit var MusicList: List<Music>
 
     init {
         startUIState()
     }
+
     private fun startUIState() {
         viewModelScope.launch {
-            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(
-                MyDBContainer.USER_ID)
+            val ResponseGetUser: UserAPIResponse = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+            val ResponseGetMusic: AllMusicAPIResponse = MyDBContainer().myDBRepositories.getAll_Music()
 
             userNow = ResponseGetUser.data
-            homeUIState = HomeUIState.Success(userNow)
+            MusicList = ResponseGetMusic.data
+            homeUIState = HomeUIState.Success(userNow, MusicList)
         }
     }
 

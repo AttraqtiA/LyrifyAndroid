@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.lyrifyapp.R
 import com.example.lyrifyapp.ui.Lyrify_Screen
 import com.example.lyrifyapp.ui.theme.Background
@@ -267,8 +268,8 @@ fun GameplayView(
                     .fillMaxWidth()
                     .height(360.dp)
             ) {
-                Image(
-                    painter = painterResource(id = variabel_UIState.music.image),
+                AsyncImage(
+                    model = "https://lyrify.online/resources/local_assets/${variabel_UIState.music.image}",
                     contentDescription = "Song Cover",
                     modifier = Modifier
                         .fillMaxSize(),

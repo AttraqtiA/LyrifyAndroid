@@ -337,7 +337,7 @@ fun ProfileView(
                                 text = if (mDate.value.isNotBlank()) {
                                     mDate.value
                                 } else {
-                                    "12/4/2004"
+                                    "${currentUser?.birthdate}"
                                 },
                                 style = TextStyle(
                                     fontSize = 14.sp,
@@ -385,7 +385,7 @@ fun ProfileView(
                                 }
                             ) {
                                 BasicTextField(
-                                    value = if (gender.isNotEmpty()) gender else "Male",
+                                    value = gender.ifEmpty { "${currentUser?.gender}" },
                                     readOnly = true,
                                     onValueChange = {},
                                     textStyle = TextStyle(
@@ -501,7 +501,7 @@ fun ProfileView(
                                     )
                                 )
                                 Text(
-                                    text = "Chapter 12",
+                                    text = "Chapter ${currentUser?.achievement}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = montserrat,
@@ -519,7 +519,7 @@ fun ProfileView(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "Highest Points",
+                                    text = "Total Points",
                                     style = TextStyle(
                                         fontSize = 16.sp,
                                         fontFamily = montserrat,

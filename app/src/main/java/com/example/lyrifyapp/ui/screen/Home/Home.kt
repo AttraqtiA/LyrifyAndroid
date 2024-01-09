@@ -54,9 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.request.ImageRequest
 import com.example.lyrifyapp.R
 import com.example.lyrifyapp.data.DataStoreManager
+import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
@@ -66,6 +68,7 @@ import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.montserrat
 import retrofit2.Response
+import kotlin.random.Random
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,9 +81,12 @@ fun HomeView(
 
     var currentUser: User? = null
     val cek_status: HomeUIState = homeViewModel.homeUIState
+    var musicList: List<Music> = mutableListOf()
+
     when (cek_status) {
         is HomeUIState.Success -> {
             currentUser = homeViewModel.userNow
+            musicList = homeViewModel.MusicList
         }
 
         is HomeUIState.Error -> {
@@ -173,7 +179,7 @@ fun HomeView(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            text = "Last Song",
+                            text = "Recommended Songs",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = montserrat,
@@ -193,15 +199,14 @@ fun HomeView(
                         contentPadding = PaddingValues(start = 20.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        item {
-                            SongCard()
+                        val random =  Random(System.currentTimeMillis()) // Seed with current time
+                        val randomFiveMusic = musicList.shuffled(random).distinctBy { it.title }.take(5)
+
+                        items(randomFiveMusic) { music ->
+                            SongCard(music)
                         }
-                        item {
-                            SongCard()
-                        }
-                        item {
-                            SongCard()
-                        }
+
+
                     }
                 }
                 item {
@@ -275,14 +280,16 @@ fun SongCard(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.artist_picture),
-                    contentDescription = "artist_picture_1",
+                AsyncImage(
+                    model = "https://lyrify.online/resources/local_assets/${music.image}",
+                    contentDescription = "Music Cover Album",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
                         .clip(RoundedCornerShape(10.dp))
                 )
+
+
                 Spacer(Modifier.height(5.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -290,7 +297,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Cruel Summer",
+                        text = music.title,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = montserrat,
@@ -309,7 +316,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Taylor Swift",
+                        text = music.artist,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = montserrat,
@@ -328,7 +335,7 @@ fun SongCard(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "2019",
+                        text = music.year_released,
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontFamily = montserrat,
