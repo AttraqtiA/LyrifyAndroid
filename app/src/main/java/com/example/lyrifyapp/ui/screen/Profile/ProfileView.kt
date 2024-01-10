@@ -2,8 +2,10 @@ package com.example.lyrifyapp.ui.screen.Profile
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.widget.DatePicker
-import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +24,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -48,25 +53,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import com.example.lyrifyapp.R
-import com.example.lyrifyapp.ui.theme.Background
-import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
-import com.example.lyrifyapp.ui.theme.Orange
-import com.example.lyrifyapp.ui.theme.Purple2
-import com.example.lyrifyapp.ui.theme.montserrat
-import java.util.Calendar
-import java.util.Date
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.lyrifyapp.R
 import com.example.lyrifyapp.data.DataStoreManager
-import com.example.lyrifyapp.model.User
-import com.example.lyrifyapp.ui.screen.Home.HomeUIState
-import com.example.lyrifyapp.ui.screen.Home.HomeViewModel
+import com.example.lyrifyapp.model.UserAPIResponse
+import com.example.lyrifyapp.ui.Lyrify_Screen
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
+import com.example.lyrifyapp.ui.theme.Background
+import com.example.lyrifyapp.ui.theme.Orange
+import com.example.lyrifyapp.ui.theme.Purple2
 import com.example.lyrifyapp.ui.theme.grayCustom
+import com.example.lyrifyapp.ui.theme.montserrat
+import retrofit2.Response
+import java.util.Calendar
+import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,12 +80,15 @@ fun ProfileView(
     dataStore: DataStoreManager,
     navController: NavController,
 ) {
-    var currentUser: User? = null
-
     val cek_status: ProfileUIState = profileViewModel.profileUIState
+
+    var userId: Int? = null
+    var userNow: Response<UserAPIResponse>? = null
+    val context = LocalContext.current
     when (cek_status) {
         is ProfileUIState.Success -> {
-//            currentUser = profileViewModel.userNow
+            userId = cek_status.user
+            userNow = cek_status.userNow
         }
 
         is ProfileUIState.Error -> {
@@ -91,10 +98,20 @@ fun ProfileView(
         is ProfileUIState.Loading -> {
             LoadingErrorView()
         }
+
+    }
+
+    var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ) {
+        selectedImage = it
     }
 
     var bioInput by rememberSaveable { mutableStateOf("") }
-
+    var genderInput by rememberSaveable { mutableStateOf("") }
+    var birthdateInput by rememberSaveable { mutableStateOf("") }
 
     // DATE PICKER
     // Fetching the Local Context
@@ -128,7 +145,6 @@ fun ProfileView(
             mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
         }, mYear, mMonth, mDay
     )
-
 
     // GENDER
     var isExpanded by remember {
@@ -178,9 +194,9 @@ fun ProfileView(
                                     painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                                     contentDescription = "Back",
                                     modifier = Modifier
-                                        .size(22.dp)
+                                        .size(32.dp)
                                         .clickable {
-                                            //
+                                            navController.navigateUp()
                                         },
                                     contentScale = ContentScale.Crop,
                                 )
@@ -196,12 +212,16 @@ fun ProfileView(
                                     )
                                 )
                                 Image(
-                                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                                    contentDescription = "Back",
+                                    painter = painterResource(id = R.drawable.baseline_logout_24),
+                                    contentDescription = "Logout",
                                     modifier = Modifier
-                                        .size(22.dp),
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .clickable {
+                                            profileViewModel.Logout()
+                                            navController.navigate(Lyrify_Screen.LoginView.name)
+                                        },
                                     contentScale = ContentScale.Crop,
-                                    colorFilter = ColorFilter.tint(Color.Transparent)
                                 )
                             }
                         }
@@ -209,24 +229,30 @@ fun ProfileView(
                             modifier = Modifier.padding(bottom = 80.dp),
                             contentAlignment = Alignment.BottomEnd
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.main_profile_photo),
-                                contentDescription = "Profile Photo",
-                                modifier = Modifier
-                                    .size(90.dp)
-                                    .clip(CircleShape)
-                                    .clickable {
-                                        //
-                                    },
-                                contentScale = ContentScale.Crop
-                            )
+
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context = LocalContext.current)
+                                        .data("${userNow?.body()?.data?.image}")
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.profilepicture),
+                                    contentDescription = "Profile Photo",
+                                    modifier = Modifier
+                                        .size(90.dp)
+                                        .clip(CircleShape)
+                                        .clickable {
+                                            galleryLauncher.launch("image/*")
+                                        },
+                                    contentScale = ContentScale.Crop
+                                )
+
                             Box(
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .background(color = Orange)
                                     .size(30.dp)
                                     .clickable {
-                                        //
+
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -240,7 +266,7 @@ fun ProfileView(
                             }
                         }
                         Text(
-                            text = "${currentUser?.name}",
+                            text = "${userNow?.body()?.data?.name}",
                             style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = montserrat,
@@ -294,7 +320,7 @@ fun ProfileView(
                                 .fillMaxWidth()
                         )
                         TextField(
-                            value = "${currentUser?.description}",
+                            value = userNow?.body()?.data?.description.toString(),
                             onValueChange = { bioInput = it },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -307,7 +333,7 @@ fun ProfileView(
                                 focusedBorderColor = Color.White
                             ),
                             modifier = Modifier.fillMaxWidth()
-//                    isError = IPKCalculator_UIState.checkSKSError,
+
                         )
                         Divider(
                             thickness = 0.1.dp,
@@ -335,7 +361,7 @@ fun ProfileView(
                                 text = if (mDate.value.isNotBlank()) {
                                     mDate.value
                                 } else {
-                                    "${currentUser?.birthdate}"
+                                    "${userNow?.body()?.data?.birthdate}"
                                 },
                                 style = TextStyle(
                                     fontSize = 14.sp,
@@ -363,7 +389,8 @@ fun ProfileView(
                                 .fillMaxWidth()
                                 .background(color = Color.White)
                                 .padding(start = 14.dp, end = 14.dp, top = 7.dp, bottom = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
                                 text = "Gender",
@@ -383,9 +410,8 @@ fun ProfileView(
                                 }
                             ) {
                                 BasicTextField(
-                                    value = gender.ifEmpty { "${currentUser?.gender}" },
-                                    readOnly = true,
-                                    onValueChange = {},
+                                    value = gender.ifEmpty { "${userNow?.body()?.data?.gender}" },
+                                    onValueChange = { genderInput = it },
                                     textStyle = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = montserrat,
@@ -448,9 +474,28 @@ fun ProfileView(
                                     )
                                 }
                             }
+
+                            Button(
+                                onClick = {
+                                    profileViewModel.SaveProfile()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Purple2)
+                            ) {
+                                Text(
+                                    text = "Update",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(800),
+                                        color = Color(0xFFFFFFFF),
+
+                                        textAlign = TextAlign.Center,
+                                    )
+                                )
+                            }
                         }
                     }
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(16.dp))
                     Column(
                         modifier = Modifier
                             .width(320.dp)
@@ -499,7 +544,7 @@ fun ProfileView(
                                     )
                                 )
                                 Text(
-                                    text = "Chapter ${currentUser?.achievement}",
+                                    text = "Chapter ${userNow?.body()?.data?.achievement}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = montserrat,

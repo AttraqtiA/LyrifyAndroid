@@ -41,7 +41,9 @@ import com.example.lyrifyapp.R
 import com.example.lyrifyapp.container.MyDBContainer
 import com.example.lyrifyapp.data.DataStoreManager
 import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailView
+import com.example.lyrifyapp.ui.screen.Chapter.ChapterDetailViewModel
 import com.example.lyrifyapp.ui.screen.Chapter.ChapterListView
+import com.example.lyrifyapp.ui.screen.Chapter.ChapterListViewModel
 import com.example.lyrifyapp.ui.screen.Gameplay.CountdownView
 import com.example.lyrifyapp.ui.screen.Gameplay.GameplayView
 import com.example.lyrifyapp.ui.screen.Gameplay.ResultView
@@ -273,7 +275,6 @@ fun LyrifyRoute() {
             }
 
             composable(Lyrify_Screen.Profile.name) {
-
                 canNavigateBack = true
                 val profileViewModel: ProfileViewModel = viewModel()
 
@@ -286,12 +287,21 @@ fun LyrifyRoute() {
 
             composable(Lyrify_Screen.ChapterList.name) {
                 canNavigateBack = true
-                ChapterListView()
+
+                val chapterListViewModel: ChapterListViewModel = viewModel()
+
+                ChapterListView(
+                    chapterListViewModel = chapterListViewModel,
+                    navController = navController)
             }
 
             composable(Lyrify_Screen.ChapterDetail.name) {
                 canNavigateBack = true
-                ChapterDetailView()
+
+                val chapterDetailViewModel: ChapterDetailViewModel = viewModel()
+                ChapterDetailView(
+                    chapterDetailViewModel = chapterDetailViewModel,
+                )
             }
 
             composable(Lyrify_Screen.Leaderboard.name) {

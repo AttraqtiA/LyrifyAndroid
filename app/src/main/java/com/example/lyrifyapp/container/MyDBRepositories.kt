@@ -8,10 +8,10 @@ import com.example.lyrifyapp.model.APIListResponse
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.History
-import com.example.lyrifyapp.model.HistoryAPIResponse
 import com.example.lyrifyapp.model.LoginAPIResponse
 import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.MusicAPIResponse
+import com.example.lyrifyapp.model.TotalPointAPIResponse
 import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
 import com.google.gson.internal.LinkedTreeMap
@@ -38,6 +38,7 @@ class MyDBRepositories(private val myDBService: MyDBService) {
         return result
     }
 
+    // USER
     suspend fun logout(): String {
         val result = myDBService.logout()
 
@@ -50,30 +51,44 @@ class MyDBRepositories(private val myDBService: MyDBService) {
         return result.data
     }
 
-    suspend fun getUser(id: Int): Response<UserAPIResponse> {
-        return myDBService.getUser(MyDBContainer.ACCESS_TOKEN, id)
+    suspend fun getUser(token: String, id: Int): Response<UserAPIResponse> {
+        return myDBService.getUser(token, id)
+    }
+
+    suspend fun updateUser(token: String, user: User): APIResponse {
+        return myDBService.update(token, user)
     }
 
     // MUSIC
     suspend fun getAllMusic(token: String): Response<APIListResponse<List<Music>>> {
-        return myDBService.getAllMusics(token)
+        return myDBService.getAllMusic(token)
     }
 
-    suspend fun getMusic(id: Int): Response<MusicAPIResponse> {
-        return myDBService.getMusic(MyDBContainer.ACCESS_TOKEN, id)
+    suspend fun getMusic(token: String, id: Int): Response<MusicAPIResponse> {
+        return myDBService.getMusic(token, id)
     }
 
-    // CHAPTER
+    // CHAPTERS
     suspend fun getAllChapters(token: String): Response<APIListResponse<List<Chapter>>> {
         return myDBService.getAllChapters(token)
     }
 
-    suspend fun user(token: String): Response<APIListResponse<List<User>>> {
-        return myDBService.user(token)
+    // TOTAL POINT ON CHAPTER
+    suspend fun getTotalPoint(token: String, chapterID: Int, userID: Int): TotalPointAPIResponse {
+        return myDBService.getTotalPoint(token, chapterID, userID)
     }
 
-    suspend fun histories(token: String): Response<HistoryAPIResponse> {
-        return myDBService.histories(token)
+    // getMusicBasedOnChapter
+    suspend fun getMusicBasedOnChapter(token: String, id: Int): Response<APIListResponse<List<Music>>> {
+        return myDBService.getMusicBasedOnChapter(token, id)
+    }
+
+    // HISTORY
+    suspend fun createHistory(token: String, history: History): APIResponse {
+        return myDBService.createHistory(token, history)
+    }
+
+    suspend fun getHistoryUser(token: String, userId: Int, musicId: Int): Response<History> {
+        return myDBService.getHistoryUser(token, userId, musicId)
     }
 }
-//hisorey where user score sum

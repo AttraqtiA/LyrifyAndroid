@@ -48,3 +48,9 @@ class APIListResponse<T> (
     val message:String = "",
     val data: T
 )
+
+class TotalPointAPIResponse (
+    val status:String = "",
+    val message:String = "",
+    val data: Int
+)

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -41,19 +43,48 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.container.MyDBContainer
+import com.example.lyrifyapp.model.APIListResponse
+import com.example.lyrifyapp.model.Chapter
+import com.example.lyrifyapp.ui.Lyrify_Screen
+import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.DarkPurple
-import com.example.lyrifyapp.ui.theme.GreenCorrect
 import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 import com.example.lyrifyapp.ui.theme.Orange
+import com.example.lyrifyapp.ui.theme.grayCustom
 import com.example.lyrifyapp.ui.theme.montserrat
+import retrofit2.Response
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChapterListView(chapterlistViewModel: ChapterListViewModel = viewModel()) {
+fun ChapterListView(chapterListViewModel: ChapterListViewModel, navController: NavController) {
+
+    var chaptersBody: Response<APIListResponse<List<Chapter>>>? = null
+    val cek_status: ChapterListUIState = chapterListViewModel.chapterListUIState
+
+    when (cek_status) {
+        is ChapterListUIState.Success -> {
+            chaptersBody = cek_status.chapterList
+        }
+
+        is ChapterListUIState.Error -> {
+            LoadingErrorView()
+        }
+
+        is ChapterListUIState.Loading -> {
+            LoadingErrorView()
+        }
+    }
+
+    val chapters: APIListResponse<List<Chapter>>? = chaptersBody?.body()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -101,7 +132,9 @@ fun ChapterListView(chapterlistViewModel: ChapterListViewModel = viewModel()) {
                     )
                 }
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
                     shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color(0xFFFFFFFF)
@@ -129,24 +162,37 @@ fun ChapterListView(chapterlistViewModel: ChapterListViewModel = viewModel()) {
                         horizontalArrangement = Arrangement.spacedBy(7.dp),
                         verticalArrangement = Arrangement.spacedBy(7.dp)
                     ) {
-                        item {
-                            ChapterListCard()
+                        if (chapters != null) {
+                            items(chapters.data.size) { it ->
+                                ChapterListCard(
+                                    it,
+                                    chapters,
+                                    chapterListViewModel,
+                                    navController
+                                )
+                            }
                         }
-                        item {
-                            ChapterListCard()
-                        }
-                        item {
-                            ChapterListCard()
-                        }
-                        item {
-                            ChapterListCard()
-                        }
-                        item {
-                            ChapterListCard()
-                        }
-                        item {
-                            ChapterListCard()
-                        }
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp)
+                    ) {
+                        Text(
+                            text = "Coming Soon!!!",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                color = grayCustom,
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.64.sp,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
                     }
                 }
             }
@@ -156,15 +202,22 @@ fun ChapterListView(chapterlistViewModel: ChapterListViewModel = viewModel()) {
 
 @Composable
 fun ChapterListCard(
-
+    it: Int, chapter: APIListResponse<List<Chapter>>, chapterListViewModel: ChapterListViewModel, navController: NavController
 ) {
+
+//    LaunchedEffect(chapterListViewModel) {
+//       chapterListViewModel.insertChapterID(it + 1)
+//    }
+//    chapterListViewModel.insertChapterID(it)
     Card(
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(0.5.dp, Orange),
         modifier = Modifier
             .fillMaxWidth()
+            .height(370.dp)
             .clickable {
-                //
+                MyDBContainer.CHAPTER_ID = it
+                navController.navigate(Lyrify_Screen.ChapterDetail.name)
             },
         colors = CardDefaults.cardColors(
             containerColor = DarkPurple,
@@ -179,10 +232,13 @@ fun ChapterListCard(
                 .padding(10.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.chapter_1),
-                contentDescription = "artist_picture_1",
-                contentScale = ContentScale.Crop,
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data("https://lyrify.online/resources/local_assets/${chapter.data[it].image}")
+                    .crossfade(true)
+                    .build(),
+//                            placeholder = painterResource(id = R.drawable.profilepicture),
+                contentDescription = "Chapter Picture",
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
@@ -194,7 +250,7 @@ fun ChapterListCard(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "Chapter 1",
+                    text = chapter.data[it].title,
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = montserrat,
@@ -213,7 +269,7 @@ fun ChapterListCard(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "“Exploring the Tapestry of Music”",
+                    text = "“${chapter.data[it].description}",
                     style = TextStyle(
                         fontSize = 12.sp,
                         fontFamily = montserrat,
@@ -239,7 +295,7 @@ fun ChapterListCard(
                                 color = Green
                             )
                         ) {
-                            append("0 points")
+                            append("100 points")
                         }
                     },
                     style = TextStyle(
@@ -260,6 +316,9 @@ fun ChapterListCard(
 @Composable
 fun ChapterListPreview() {
     LyrifyAppTheme {
-        ChapterListView()
+        ChapterListView(
+            chapterListViewModel = ChapterListViewModel(),
+            navController = rememberNavController()
+        )
     }
 }

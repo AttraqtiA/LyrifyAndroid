@@ -10,7 +10,7 @@ data class Music (
     val challenge_type: String,
     val title: String,
     val genre: String,
-    val lyrics: String,
+    val lyric: String,
     val option1: String,
     val option2: String,
     val option3: String,

@@ -106,7 +106,7 @@ fun GameplayView(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Top
                     ) {
-                        Text(
+                        Text( // hilang
                             text = "+20\npoints",
                             style = TextStyle(
                                 fontSize = 16.sp,
@@ -429,7 +429,7 @@ fun GameplayView(
                             )
                         }
 
-                        val lyrics = variabel_UIState.music.lyrics
+                        val lyrics = variabel_UIState.music.lyric
                         val placeholder = "....."
 
                         val annotatedString = buildAnnotatedString {
@@ -496,6 +496,146 @@ fun GameplayView(
                             ) {
                                 Text(
                                     text = variabel_UIState.music.option1,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = 2
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = variabel_UIState.music.option2,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = 3
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = variabel_UIState.music.option3,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = 4
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = variabel_UIState.music.option4,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = 5
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = variabel_UIState.music.option5,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = montserrat,
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 0.8.sp,
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {
+                                            indexDefault = 6
+                                            isCorrect = gameplayViewModel.CalculatePoint(timeLeft, indexDefault)
+                                            isDone = true
+                                            dialogshow = true
+                                        }
+                                    )
+                                    .padding(4.dp)
+                                    .background(color = Purple3, shape = RoundedCornerShape(8.dp))
+                                    .padding(4.dp)
+                                    .wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = variabel_UIState.music.option6,
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontFamily = montserrat,

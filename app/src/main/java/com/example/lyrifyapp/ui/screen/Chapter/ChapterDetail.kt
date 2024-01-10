@@ -31,21 +31,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lyrifyapp.R
+import com.example.lyrifyapp.model.APIListResponse
+import com.example.lyrifyapp.model.Music
+import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
-import com.example.lyrifyapp.ui.theme.LyrifyAppTheme
 import com.example.lyrifyapp.ui.theme.Orange
 import com.example.lyrifyapp.ui.theme.Purple2
 import com.example.lyrifyapp.ui.theme.montserrat
+import retrofit2.Response
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChapterDetailView(chapterdetailViewModel: ChapterDetailViewModel = viewModel()) {
+fun ChapterDetailView(chapterDetailViewModel: ChapterDetailViewModel) {
+
+    var chapterDetailsBody: Response<APIListResponse<List<Music>>>? = null
+    val cek_status: ChapterDetailUIState = chapterDetailViewModel.chapterDetailUIState
+
+    when (cek_status) {
+        is ChapterDetailUIState.Success -> {
+            chapterDetailsBody = cek_status.musics
+        }
+
+        is ChapterDetailUIState.Error -> {
+            LoadingErrorView()
+        }
+
+        is ChapterDetailUIState.Loading -> {
+            LoadingErrorView()
+        }
+    }
+
+    val chapterDetails: APIListResponse<List<Music>>? = chapterDetailsBody?.body()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -137,20 +158,13 @@ fun ChapterDetailView(chapterdetailViewModel: ChapterDetailViewModel = viewModel
                         }
                     }
                 }
-                item {
-                    ChapterDetailCard()
-                }
-                item {
-                    ChapterDetailCard()
-                }
-                item {
-                    ChapterDetailCard()
-                }
-                item {
-                    ChapterDetailCard()
-                }
-                item {
-                    ChapterDetailCard()
+                if (chapterDetails != null) {
+                    items(chapterDetails.data.size) { it ->
+                        ChapterDetailCard(
+                            it,
+                            chapterDetails
+                        )
+                    }
                 }
             }
         }
@@ -159,7 +173,7 @@ fun ChapterDetailView(chapterdetailViewModel: ChapterDetailViewModel = viewModel
 
 @Composable
 fun ChapterDetailCard(
-
+    it: Int, chapterDetails: APIListResponse<List<Music>>
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -191,7 +205,7 @@ fun ChapterDetailCard(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "1",
+                        text = "$it",
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontFamily = montserrat,
@@ -211,7 +225,7 @@ fun ChapterDetailCard(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = "Believer",
+                            text = chapterDetails.data[it].title,
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontFamily = montserrat,
@@ -223,7 +237,7 @@ fun ChapterDetailCard(
                             modifier = Modifier.fillMaxWidth()
                         )
                         Text(
-                            text = "by Imagine Dragons",
+                            text = "by ${chapterDetails.data[it].artist}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = montserrat,
@@ -259,10 +273,10 @@ fun ChapterDetailCard(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ChapterDetailPreview() {
-    LyrifyAppTheme {
-        ChapterDetailView()
-    }
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun ChapterDetailPreview() {
+//    LyrifyAppTheme {
+//        ChapterDetailView()
+//    }
+//}

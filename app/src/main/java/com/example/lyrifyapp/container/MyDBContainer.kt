@@ -21,6 +21,8 @@ class MyDBContainer {
         //bekerja seperti static
         var ACCESS_TOKEN = ""
         var USER_ID = -1
+        var CHAPTER_ID = -1
+        var MUSIC_ID = -1
     }
     //master URL
     //ipv4 address (BASE_URL diganti setiap kali pindah network/wifi)

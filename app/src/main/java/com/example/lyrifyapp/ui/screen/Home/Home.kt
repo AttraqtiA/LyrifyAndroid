@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -58,13 +57,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lyrifyapp.R
-import com.example.lyrifyapp.container.MyDBContainer
 import com.example.lyrifyapp.model.APIListResponse
-import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.Music
-import com.example.lyrifyapp.model.User
 import com.example.lyrifyapp.model.UserAPIResponse
+import com.example.lyrifyapp.ui.Lyrify_Screen
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.theme.Background
 import com.example.lyrifyapp.ui.theme.ChapColor
@@ -136,33 +133,40 @@ fun HomeView(
                             .padding(start = 20.dp, end = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-//                        Image(
-//                            painter = painterResource(id = R.drawable.main_profile_photo),
-//                            contentDescription = "profile_photo",
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier
-//                                .width(70.dp)
-//                                .height(70.dp)
-//                                .clip(CircleShape)
-//                        )
-                        AsyncImage(
-                            model = ImageRequest.Builder(context = LocalContext.current)
-                                .data("https://lyrify.online/resources/local_assets/${userNow?.body()?.data?.image}")
-                                .crossfade(true)
-                                .build(),
-//                            placeholder = painterResource(id = R.drawable.profilepicture),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                                .clip(CircleShape)
-                        )
+                        if (userNow?.body()?.data?.image == "profile_default.png") {
+                            AsyncImage(
+                                model = "https://lyrify.online/resources/local_assets/profile_default.png",
+                                placeholder = painterResource(id = R.drawable.profilepicture),
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .width(70.dp)
+                                    .height(70.dp)
+                                    .clip(CircleShape)
+                            )
+                        } else {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context = LocalContext.current)
+                                    .data("${userNow?.body()?.data?.image}")
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(id = R.drawable.profilepicture),
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .width(70.dp)
+                                    .height(70.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
                         Spacer(Modifier.width(12.dp))
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Hi ${userNow?.body()?.data?.image}",
+                                text = if (userNow?.body()?.data?.name == null) {
+                                    "Hi --loading--!"
+                                } else {
+                                    "Hi ${userNow.body()?.data?.name}!"
+                                },
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontFamily = montserrat,
@@ -192,7 +196,7 @@ fun HomeView(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            text = "Recommended Songs",
+                            text = "Songs Just For You",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = montserrat,
@@ -212,20 +216,30 @@ fun HomeView(
                         contentPadding = PaddingValues(start = 20.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        val random =  Random(System.currentTimeMillis()) // Seed with current time
+//                        val random = Random(System.currentTimeMillis()) // Seed with current time
 //                        val randomFiveMusic = musicList.shuffled(random)?.distinctBy { it.title }.take(5)
 
 
-                        musics?.data?.size?.let { it1 ->
-                            items(it1) {index ->
-                                SongCard(
-                                    image = musics.data[index].image,
-                                    title = musics.data[index].title,
-                                    artist = musics.data[index].artist,
-                                    year_released = musics.data[index].artist,
-                                    navController = navController
-                                )
-                            }
+//                        musics?.data?.size?.let { it1 ->
+//                            items(it1) { index ->
+//                                SongCard(
+//                                    image = musics.data[index].image,
+//                                    title = musics.data[index].title,
+//                                    artist = musics.data[index].artist,
+//                                    year_released = musics.data[index].artist,
+//                                    navController = navController
+//                                )
+//                            }
+//                        }
+
+                        item {
+                            SongCard(
+                                image = "fix_you.jpg",
+                                title = "Fix You",
+                                artist = "Coldplay",
+                                year_released = "2008",
+                                navController = navController
+                            )
                         }
 
                     }
@@ -240,7 +254,7 @@ fun HomeView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Completed Chapter",
+                            text = "Recommended Chapter",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = montserrat,
@@ -268,9 +282,9 @@ fun HomeView(
                 Toast.makeText(context, musics.toString(), Toast.LENGTH_LONG).show()
 
                 chapters?.data?.size?.let { it1 ->
-                    items(it1) {index ->
+                    items(it1) { index ->
                         ChapterCard(
-                            count = index,
+                            count = index + 1,
                             image = chapters.data[index].image,
                             title = chapters.data[index].title,
                             navController = navController
@@ -293,7 +307,10 @@ fun SongCard(
     Card(
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(0.5.dp, Orange),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable(onClick = {
+                navController.navigate(Lyrify_Screen.Countdown.name)
+            }),
         colors = CardDefaults.cardColors(
             containerColor = ChapColor,
         ),
@@ -403,7 +420,10 @@ fun ChapterCard(
         border = BorderStroke(0.5.dp, Orange),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+            .clickable(onClick = {
+                navController.navigate(Lyrify_Screen.Countdown.name)
+            }),
         colors = CardDefaults.cardColors(
             containerColor = ChapColor,
         ),

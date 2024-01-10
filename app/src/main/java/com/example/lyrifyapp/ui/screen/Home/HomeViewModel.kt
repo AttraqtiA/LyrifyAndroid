@@ -42,12 +42,11 @@ class HomeViewModel : ViewModel() {
     private fun startUIState() {
         viewModelScope.launch {
 
-            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.ACCESS_TOKEN, MyDBContainer.USER_ID)
             Log.d("user_check", userNow.body().toString())
             musicList = MyDBContainer().myDBRepositories.getAllMusic(MyDBContainer.ACCESS_TOKEN)
             Log.d("music_check", musicList.body()?.data.toString())
             chapterList = MyDBContainer().myDBRepositories.getAllChapters(MyDBContainer.ACCESS_TOKEN)
-            Log.d("music_check", musicList.body()?.data.toString())
 
             homeUIState =
                 HomeUIState.Success(MyDBContainer.USER_ID, userNow, musicList, chapterList)
