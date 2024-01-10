@@ -49,12 +49,12 @@ class GameplayViewModel : ViewModel() {
                 "Fix You",
                 "Pop",
                 "When you try your ....., but you dont succeed",
-                "best",
+                mutableListOf("best",
                 "west",
                 "self",
                 "well",
                 "day",
-                "way",
+                "way"),
                 1,
                 "AQl5nFnZPwk",
                 "Coldplay",
@@ -81,12 +81,12 @@ class GameplayViewModel : ViewModel() {
                     "Fix You",
                     "Pop",
                     "When you try your ....., but you dont succeed",
-                    "best",
-                    "west",
-                    "west",
-                    "a",
-                    "b",
-                    "c",
+                    mutableListOf("best",
+                        "west",
+                        "self",
+                        "well",
+                        "day",
+                        "way"),
                     1,
                     "AQl5nFnZPwk",
                     "Coldplay",
@@ -130,7 +130,7 @@ class GameplayViewModel : ViewModel() {
         var base_point = 0
 
         // semisal indexnya 99 atau tdk menjawab sama sekali, ya otomatis dihitung incorrect
-        if (answer == _uiState.value.music.answer_key) {
+        if (answer + 1 == _uiState.value.music.answer_key) {
             base_point = 50
         }
 

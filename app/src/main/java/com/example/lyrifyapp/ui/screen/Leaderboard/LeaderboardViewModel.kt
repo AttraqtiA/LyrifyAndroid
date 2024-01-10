@@ -43,7 +43,7 @@ class LeaderboardViewModel : ViewModel() {
     private fun startUIState() {
         viewModelScope.launch {
 
-            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.USER_ID)
+            userNow = MyDBContainer().myDBRepositories.getUser(MyDBContainer.ACCESS_TOKEN, MyDBContainer.USER_ID)
             Log.d("user_check", userNow.body().toString())
             userList = MyDBContainer().myDBRepositories.user(MyDBContainer.ACCESS_TOKEN)
             Log.d("music_check", userList.body()?.data.toString())

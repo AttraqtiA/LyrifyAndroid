@@ -136,13 +136,7 @@ fun BottomNavBarLyrify(navController: NavController) {
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                 onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.navigate(item.route)
                 },
                 // Customize the colors
                 colors = NavigationBarItemDefaults.colors(
@@ -206,7 +200,7 @@ fun LyrifyRoute() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Lyrify_Screen.RegisterView.name, // GANTI STARTNYA NYA DI SINII
+            startDestination = Lyrify_Screen.Intro1.name, // GANTI STARTNYA NYA DI SINII
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -326,7 +320,7 @@ fun LyrifyRoute() {
                 navController.clearBackStack(Lyrify_Screen.Countdown.name)
                 GameplayView(
                     navigateBack = { navController.navigateUp() },
-                    toChapterDetail = { navController.navigate(Lyrify_Screen.ChapterDetail.name) }
+                    toChapterDetail = { navController.navigate(Lyrify_Screen.Home.name) }
                 )
             }
 

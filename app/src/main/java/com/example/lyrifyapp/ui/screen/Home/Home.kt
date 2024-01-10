@@ -279,7 +279,6 @@ fun HomeView(
                     Spacer(Modifier.height(10.dp))
                 }
 
-                Toast.makeText(context, musics.toString(), Toast.LENGTH_LONG).show()
 
                 chapters?.data?.size?.let { it1 ->
                     items(it1) { index ->
