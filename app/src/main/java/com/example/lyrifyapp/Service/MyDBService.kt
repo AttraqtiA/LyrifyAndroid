@@ -4,6 +4,7 @@ import com.example.lyrifyapp.model.APIListResponse
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
 import com.example.lyrifyapp.model.History
+import com.example.lyrifyapp.model.HistoryAPIResponse
 import com.example.lyrifyapp.model.Level
 import com.example.lyrifyapp.model.LevelAPIResponse
 import com.example.lyrifyapp.model.LoginAPIResponse
@@ -36,7 +37,9 @@ interface MyDBService {
 
     //USER
     @GET("all_user")
-    suspend fun user(): Response<APIListResponse<UserAPIResponse>>
+    suspend fun user(
+        @Header("Authorization") token: String,
+        ): Response<APIListResponse<List<User>>>
 
     @GET("user/{id}")
     suspend fun getUser(
@@ -76,7 +79,9 @@ interface MyDBService {
 
     // HISTORY
     @GET("/histories")
-    suspend fun histories(): History
+    suspend fun histories(
+        @Header("Authorization") token: String
+    ): Response<HistoryAPIResponse>
 
     @POST("/create_history")
     suspend fun register(@Body history: History): APIResponse
@@ -92,6 +97,11 @@ interface MyDBService {
     suspend fun levels(
         @Header("Authorization") token: String
     ): Level
+
+    @GET("/users/sorted-by-points")
+    suspend fun getUsersSortedByPoints(
+        @Header("Authorization") token: String
+    ): APIListResponse<List<User>>
 
     @GET("/levels/{id}")
     suspend fun getLevel(

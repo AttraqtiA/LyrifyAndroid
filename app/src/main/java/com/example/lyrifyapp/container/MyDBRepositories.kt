@@ -7,6 +7,8 @@ import com.example.lyrifyapp.Service.MyDBService
 import com.example.lyrifyapp.model.APIListResponse
 import com.example.lyrifyapp.model.APIResponse
 import com.example.lyrifyapp.model.Chapter
+import com.example.lyrifyapp.model.History
+import com.example.lyrifyapp.model.HistoryAPIResponse
 import com.example.lyrifyapp.model.LoginAPIResponse
 import com.example.lyrifyapp.model.Music
 import com.example.lyrifyapp.model.MusicAPIResponse
@@ -65,4 +67,13 @@ class MyDBRepositories(private val myDBService: MyDBService) {
     suspend fun getAllChapters(token: String): Response<APIListResponse<List<Chapter>>> {
         return myDBService.getAllChapters(token)
     }
+
+    suspend fun user(token: String): Response<APIListResponse<List<User>>> {
+        return myDBService.user(token)
+    }
+
+    suspend fun histories(token: String): Response<HistoryAPIResponse> {
+        return myDBService.histories(token)
+    }
 }
+//hisorey where user score sum

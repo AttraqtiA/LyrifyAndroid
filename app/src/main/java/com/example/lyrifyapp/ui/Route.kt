@@ -1,7 +1,6 @@
 package com.example.lyrifyapp.ui
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -26,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Back
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -55,6 +53,7 @@ import com.example.lyrifyapp.ui.screen.Intro.Loading3View
 import com.example.lyrifyapp.ui.screen.Intro.LoadingView
 import com.example.lyrifyapp.ui.screen.Intro.LoginView
 import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardView
+import com.example.lyrifyapp.ui.screen.Leaderboard.LeaderboardViewModel
 import com.example.lyrifyapp.ui.screen.LoadingErrorView
 import com.example.lyrifyapp.ui.screen.Login.LoginViewModel
 import com.example.lyrifyapp.ui.screen.Profile.ProfileView
@@ -297,7 +296,10 @@ fun LyrifyRoute() {
 
             composable(Lyrify_Screen.Leaderboard.name) {
                 canNavigateBack = true
-                LeaderboardView()
+                LeaderboardView(
+                    leaderboardViewModel = LeaderboardViewModel(),
+                    navController = navController,
+                )
             }
 
             composable(Lyrify_Screen.Countdown.name) {
